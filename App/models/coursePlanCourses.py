@@ -3,20 +3,17 @@ from App.database import db
 
 class CoursePlanCourses(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    planId = db.Column(db.ForeignKey('course_plan.planId'))
-    code = db.Column(db.ForeignKey('course.courseCode'))
-    
-    # associated_coursePlan = db.relationship('CoursePlan', back_populates='students', overlaps="coursePlan")
-    # associated_course = db.relationship('Course', back_populates='planIds', overlaps="courses")
+    coursePlanID = db.Column(db.ForeignKey('courseplan.planID'))
+    courseCode = db.Column(db.ForeignKey('course.courseCode'))
 
     def __init__(self, plan, courseCode):
-        self.planId = plan
-        self.code = courseCode
+        self.coursePlanID = plan
+        self.courseCode = courseCode
         
 
     def get_json(self):
         return{
-            'Course Plan ID': self.planId,
-            'Course': self.code
+            'Course Plan ID': self.coursePlanID,
+            'Course': self.courseCode
         }
 

@@ -1,12 +1,11 @@
 from App.database import db
 
 class CoursePlan(db.Model):
-    planId=db.Column(db.Integer, primary_key=True)
-    studentId=db.Column(db.Integer,  db.ForeignKey('student.id'), nullable=False)
-    
-    student = db.relationship('Student', backref=db.backref('course_plans', uselist=True))
-
-    # courses = db.relationship('CoursePlanCourses', backref = 'coursePlan', lazy=True)
+    planID = db.Column(db.Integer, primary_key=True),
+    studentID = db.Column(db.Integer,  db.ForeignKey('student.studentID'), nullable=False),
+    semesterID = db.Column(db.Integer,  db.ForeignKey('semester.semesterID'), nullable=False),
+    programs = db.relationship('Program', backrefs= 'coursePlan', lazy = True),
+    courses = db.relationship('Course', backrefs= 'coursePlan', lazy = True)
 
     def __init__(self, studentid, ):
         self.studentId = studentid
