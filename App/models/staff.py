@@ -11,9 +11,9 @@ class Staff(User):
     email = db.Column(db.String(254),nullable = False )
 
     department = relationship('Department', backref='staff_members')
-    created_programs = relationship('Program', backref='creator', foreign_keys='Program.creatorID')
-    created_courses = relationship('Course', backref='creator', foreign_keys='Course.creatorID')
-    created_semesters = relationship('Semester', backref='creator', foreign_keys='Semester.creatorID')
+    created_programs = relationship('Program', backref=db.backref('program', lazy='joined'))
+    created_courses = relationship('Course', backref=db.backref('course', lazy='joined'))
+    created_semesters = relationship('Semester', backref=db.backref('semester', lazy='joined'))
 
     def create_program(self, departmentCode, programName, coreCredits, electiveCredits, foundCredits):
         program = Program(self, departmentCode, programName, coreCredits, electiveCredits, foundCredits)
