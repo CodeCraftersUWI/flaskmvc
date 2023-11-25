@@ -15,8 +15,8 @@ class Staff(User):
     created_courses = relationship('Course', backref='creator', foreign_keys='Course.creatorID')
     created_semesters = relationship('Semester', backref='creator', foreign_keys='Semester.creatorID')
 
-    def create_program(self, name, core_credits, elective_credits, foun_credits, department_code):
-        program = Program(programName=name, coreCredits=core_credits, electiveCredits=elective_credits, founCredits=foun_credits, departmentCode=department_code, creator=self)
+    def create_program(self, departmentCode, programName, coreCredits, electiveCredits, foundCredits):
+        program = Program(self, departmentCode, programName, coreCredits, electiveCredits, foundCredits)
         db.session.add(program)
         db.session.commit()
       
