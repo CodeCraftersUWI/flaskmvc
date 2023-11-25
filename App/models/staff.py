@@ -9,5 +9,6 @@ class Staff(User):
     firstName = db.Column(db.String(50), nullable = False)
     firstName = db.Column(db.String(50), nullable = False)
     email = db.Column(db.String(254),nullable = False )
+    
 
 
