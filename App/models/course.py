@@ -10,7 +10,15 @@ class Course(db.Model):
     credits = db.Column(db.Integer, nullable=False, )
     difficulty = db.Column(db.Integer(20), nullable=False)
     
-    prerequisites = relationship('Course', backref=db.backref('prerequisite_for', remote_side=[courseCode]))
+    prerequisites = relationship('Prerequisite', backref=db.backref('course',lazy='joined'))
+
+    def __init__(self, courseCode, prereqID, courseName, credits, difficulty):
+        self.courseCode = courseCode
+        self.prereqID = prereqID
+        self.courseName = courseName
+        self.credits = credits
+        self.difficulty = difficulty
+
 
    def add_prerequisite(self, prerequisite_code): 
         prerequisite_course = Course.query.get(prerequisite_code)
