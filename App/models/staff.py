@@ -20,8 +20,8 @@ class Staff(User):
         db.session.add(program)
         db.session.commit()
       
-    def create_course(self, course_name, course_code, credits, difficulty):
-        course = Course(courseName=course_name, courseCode=course_code, credits=credits, difficulty=difficulty, creator=self)
+    def create_course(self, courseCode, prereqID, courseName, credits, difficulty):
+        course = Course(self, courseCode, prereqID, courseName, credits, difficulty)
         db.session.add(course)
         db.session.commit()
 
