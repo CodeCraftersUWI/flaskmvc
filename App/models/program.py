@@ -12,10 +12,18 @@ class Program(db.Model):
     electiveCredits = Column(Integer, nullable=False)
     founCredits = Column(Integer, nullable=False)
 
-    coreCourses = relationship('Course', secondary='program_core_courses', backref='core_programs')
-    electiveCourses = relationship('Course', secondary='program_elective_courses', backref='elective_programs')
-    founCourses = relationship('Course', secondary='program_foun_courses', backref='foun_programs')
+    coreCourses = db.relationship('ProgramCourse', sbackref=db.backref('course', lazy='joined'))
+    electiveCourses = db.relationship('ProgramCourse', backref=db.backref('course', lazy='joined'))
+    founCourses = db.relationship('ProgramCourse', backref=db.backref('course', lazy='joined'))
+    students = db.relationship('Student', backref=db.backref('student', lazy='joined'))
 
+    def __init__(self, department_code, program_name, core_credits, elective_credits, foun_credits):
+        self.departmentCode = department_code
+        self.programName = program_name
+        self.coreCredits = core_credits
+        self.electiveCredits = elective_credits
+        self.founCredits = foun_credits
+        
     students = relationship('Student', backref='program')
 
     def add_course(self, course_code, course_type):
