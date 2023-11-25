@@ -1,20 +1,13 @@
 from .user import User 
 from App.database import db
+from sqlalchemy import Column, Integer, Date, ForignKey
 
 class Staff(User):
-
     
-    id = db.Column(db.String(10), db.ForeignKey('user.id'), primary_key=True)
-    name = db.Column(db.String(50))
+    staffID = db.Column(db.Integer, primary_key=True)
+    departmentCode = db.Column(db.String(10), db.ForeignKey(department.departmentCode), nullable = False)
+    firstName = db.Column(db.String(50), nullable = False)
+    firstName = db.Column(db.String(50), nullable = False)
+    email = db.Column(db.String(254),nullable = False )
 
-    def __init__(self, password, staff_id, name):
-        super().__init__(staff_id, password)
-        self.id = staff_id
-        self.name = name
-
-    def get_json(self):
-        return{
-            'staff_id': self.id,
-            'name': self.name,
-        }
 
