@@ -25,8 +25,8 @@ class Staff(User):
         db.session.add(course)
         db.session.commit()
 
-    def create_semester(self, year, semester_type):
-        semester = Semester(year=year, semesterType=semester_type, creator=self)
+    def create_semester(self, year, semestertype):
+        semester = Semester(self, year, semestertype)
         db.session.add(semester)
         db.session.commit()
 
