@@ -7,7 +7,7 @@ class Prerequisite(db.Model):
     prerequisiteCourses= db.relationship('Prerequisite', backref= db.backref('course', laxy='joined'))
     
     def addPrerequisite(self, prereq_course):
-        self.prerequisites.append(prereq_course)
+        self.prerequisiteCourses.append(prereq_course)
         db.session.commit()
     
 
