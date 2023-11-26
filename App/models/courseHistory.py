@@ -1,13 +1,12 @@
 from App.database import db
 
 class CourseHistory(db.Model):
-    CourseHistoryID = db.Column(db.Integer, primary_key=True),
+    courseHistoryID = db.Column(db.Integer, primary_key=True),
     courseCode = db.Column(db.String(50), db.ForeignKey('course.courseCode')),
+    semesterID = db.Column(db.Integer, db.ForeignKey('semesterhistory.historyID')),
     gradeLetter = db.Column(db.Char, nullable = False),
     percent = db.Column(db.Double, nullable= False),
-    courseType = db.Column(db.String(50), nullable = False),
-    semesterID = db.Column(db.Integer ),
-    semesterHistory = db.relationship('Semester History', backrefs= 'courses')
+    courseType = db.Column(db.String(50), nullable = False)
 
     def __init__(self, id, courseCode, gradeLetter, percent, courseType, semID):
         self.courseHistoryID = id
@@ -19,7 +18,8 @@ class CourseHistory(db.Model):
 
     def get_json(self):
         return{
-            'CourseHistory ID': self.courseHistoryID, #is this suppose to be id or program_id alone 
+            'CourseHistory ID': self.courseHistoryID,
             'Course Code': self.courseCode,
-            'Course Grade': self. gradeLetter self.percent
+            'Course Grade': f'{self.gradeLetter} : {self.percent}',
+            'Course Type': self.courseType
         }
