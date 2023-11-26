@@ -19,6 +19,7 @@ class Student(User):
         return{'student_id': self.id,
             'name': self.name,
             'program' : self.program_id
-            
+    #this is a test comment to test pushes and commits
+  
         }
 
