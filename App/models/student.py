@@ -17,9 +17,8 @@ class Student(User):
 
     def get_json(self):
         return{'student_id': self.id,
-            'name': self.name,
+            'name': self.name, 
             'program' : self.program_id
-            #test commment
+                  
         }
-#another test comment
 
