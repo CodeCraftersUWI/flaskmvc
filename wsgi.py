@@ -28,7 +28,8 @@ from App.controllers import (
     get_allCore,
     addCourseToPlan,
     get_student_by_id,
-    generator
+    generator,
+    list_all_courses
     )
 
 test1 = ["COMP1600",  "COMP1601", "COMP1602", "COMP1603", "COMP1604", "MATH1115", "INFO1600", "INFO1601",  "FOUN1101", "FOUN1105", "FOUN1301", "COMP3605", "COMP3606", "COMP3607", "COMP3608",]
@@ -361,6 +362,9 @@ course = AppGroup('course', help = 'Program object commands')
 #     newcourse = create_course(file_path)
 #     print(f'Course created with course code "{newcourse.courseCode}", name "{newcourse.courseName}", credits "{newcourse.credits}", ratings "{newcourse.rating}" and prerequites "{newcourse.prerequisites}"')
 
+@course.command('all', help = 'get all the courses in the db') 
+def list_courses():
+    print(list_all_courses())
 
 @course.command('prereqs', help='Create a new course')
 @click.argument('code', type=str)

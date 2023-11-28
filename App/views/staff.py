@@ -31,6 +31,9 @@ def getOfferedCourses():
   listing=get_all_OfferedCodes()
   return jsonify({'message':'Success', 'offered_courses':listing}), 200
 
+
+  
+
 @staff_views.route('/staff/program', methods=['POST'])
 @login_required
 def addProgram():
