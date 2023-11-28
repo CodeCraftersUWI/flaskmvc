@@ -10,10 +10,10 @@ def createPrerequistes(prereqs, courseName):
         if prereq_course:
             create_prereq(prereq_code,courseName) 
 
-def create_course(code, name, rating, credits, prereqs):
+def create_course(code, name, credits, rating, semester, level, offered, prereqs):
     already = get_course_by_courseCode(code)
     if already is None:
-        course = Course(code, name, rating, credits)
+        course = Course(code, name, credits, rating, semester, level, offered)
 
         if prereqs:
             createPrerequistes(prereqs, name)
@@ -34,10 +34,13 @@ def createCoursesfromFile(file_path):
                 courseName = row["courseName"]
                 credits = int(row["numCredits"])
                 rating = int(row["rating"])
+                semester = int(row["semster"])
+                level = int(row["level"])
+                offered = bool(row["offered"])
                 prerequisites_codes = row["preReqs"].split(',')
+                # create_course(courseCode, courseName, rating, credits, prerequisites_codes)
+                create_course(courseCode, courseName, credits, rating, semester, level, offered, prerequisites_codes)
 
-                create_course(courseCode, courseName, rating, credits, prerequisites_codes)
-                
     except FileNotFoundError:
         print("File not found.")
 
