@@ -9,8 +9,9 @@ class Course(db.Model):
     rating = db.Column(db.Integer)
     semester = db.Column(db.Integer)
     level = db.Column(db.Integer)   #the degree year that the course is typically taken
+    offered = db.Column(db.Boolean) #whether or not the course is currently offered
 
-    offered = db.relationship('CoursesOfferedPerSem', backref ='courses', lazy=True)
+    # offered = db.relationship('CoursesOfferedPerSem', backref ='courses', lazy=True)
     students = db.relationship('StudentCourseHistory', backref='courses', lazy=True)
     programs = db.relationship('ProgramCourses', backref='courses', lazy=True)
     prerequisites = db.relationship('Prerequisites', backref='courses', lazy = True)

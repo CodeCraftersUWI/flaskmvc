@@ -71,7 +71,7 @@ def initialize():
     with open(file_path1, 'r') as file:
         for i, line in enumerate(file):
             line = line.strip()
-            addSemesterCourses(line)
+            # addSemesterCourses(line)
 
 
 
@@ -184,12 +184,12 @@ def add_program_requirements(name,code,num):
   response=create_programCourse(name, code, num)
   print(response)
 
-@staff_cli.command("addofferedcourse",help='testing add courses offered feature')
-@click.argument("code", type=str)
-def add_offered_course(code):
-  course=addSemesterCourses(code)
-  if course:
-    print(f'Course details: {course}')
+# @staff_cli.command("addofferedcourse",help='testing add courses offered feature')
+# @click.argument("code", type=str)
+# def add_offered_course(code):
+#   course=addSemesterCourses(code)
+#   if course:
+#     print(f'Course details: {course}')
 
 
 app.cli.add_command(staff_cli)
@@ -386,11 +386,11 @@ def get_course(code):
     for r in prereqs:
         print(f'{r.prereq_courseCode}')
 
-@course.command('nextsem', help='Add a course to offered courses')
-@click.argument('code', type=str)
-def add_course(code):
-    course = addSemesterCourses(code)
-    print(f'Course Name: {course.courseName}') if course else print(f'error')
+# @course.command('nextsem', help='Add a course to offered courses')
+# @click.argument('code', type=str)
+# def add_course(code):
+#     course = addSemesterCourses(code)
+#     print(f'Course Name: {course.courseName}') if course else print(f'error')
 
 @course.command('getNextSemCourses', help='Get all the courses offered next semester')
 def allSemCourses():
