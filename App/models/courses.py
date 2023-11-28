@@ -28,6 +28,10 @@ class Course(db.Model):
         return{
             'Course Code:': self.courseCode,
             'Course Name: ': self.courseName,
+            'Credits: ': self.credits,
+            'Semester: ': self.semester,
+            'Level: ': self.level, 
             'Course Rating: ': self.rating,
             'No. of Credits: ': self.credits,
+            'Prerequisites: ': [prereq.get_json() for prereq in self.prerequisites]
         }

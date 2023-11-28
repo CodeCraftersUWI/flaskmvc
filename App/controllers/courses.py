@@ -76,5 +76,7 @@ def get_ratings(code):
     course = get_course_by_courseCode(code)
     return course.rating if course else 0
 
+def list_all_courses():
+    return (Course.query.all())
 
 

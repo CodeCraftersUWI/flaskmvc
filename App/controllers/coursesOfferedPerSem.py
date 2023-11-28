@@ -26,8 +26,8 @@ def isCourseOffered(courseCode):
     course = CoursesOfferedPerSem.query.filter_by(code=courseCode).first()
     return True if course else False
 
-def get_all_courses():
-    return CoursesOfferedPerSem.query.all()
+# def get_all_courses():
+#     return CoursesOfferedPerSem.query.all()
 
 def get_all_OfferedCodes():
     offered = get_all_courses()
