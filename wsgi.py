@@ -405,4 +405,5 @@ def allSemCourses():
 
 app.cli.add_command(course)
 
+#lalalal this is a test comment
 
