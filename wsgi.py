@@ -404,3 +404,7 @@ def allSemCourses():
     
 
 app.cli.add_command(course)
+
+
+
+#this is a test to play with merging from main to my own branch
