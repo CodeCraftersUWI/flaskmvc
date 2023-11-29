@@ -1,4 +1,5 @@
 from App.database import db
+from App.models import CoursePlanBuilder
 
 class ElectivePriority(CoursePlanBuilder):
     electivePlanID = db.Column(db.Integer, primary_key=True),
@@ -43,7 +44,7 @@ class ElectivePriority(CoursePlanBuilder):
         db.session.add(self.electivePlan)
         db.session.commit()
 
-    def getPlan()
+    def getPlan(self):
         return self.electivePlan
 
     def get_json(self):

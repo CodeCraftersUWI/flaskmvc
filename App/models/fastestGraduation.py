@@ -1,4 +1,5 @@
 from App.database import db
+from App.models import CoursePlanBuilder
 
 class FastestGraduation(CoursePlanBuilder):
     fastestGraduationID = db.Column(db.Integer, primary_key=True),
@@ -69,7 +70,7 @@ class FastestGraduation(CoursePlanBuilder):
         db.session.add(self.fastestPlan)
         db.session.commit()
 
-    def getPlan()
+    def getPlan(self):
         return self.fastestPlan
         
     def get_json(self):

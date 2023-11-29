@@ -1,11 +1,12 @@
 from App.database import db
+from App.models import Student
 
 class SemesterHistory(db.Model):
-    historyID = db.Column(db.Integer, primary_key=True),
-    studentID = db.Column(db.ForeignKey('student.studentID')),
-    year = db.Column(db.Integer, nullable = False),
-    semeterType = db.Column(db.Integer, nullable= False),
-    courses = db.relationship('CourseHistory', backrefs= 'semesterHistory', lazy = True)
+    historyID = db.Column(db.Integer, primary_key=True)
+    studentID = db.Column(db.ForeignKey('student.studentID'))
+    year = db.Column(db.Integer, nullable = False)
+    semeterType = db.Column(db.Integer, nullable= False)
+    courses = db.relationship('CourseHistory', backref = 'semesterHistory', lazy = True)
 
     def __init__(self, id, year, semesterType):
         self.studentID = id
