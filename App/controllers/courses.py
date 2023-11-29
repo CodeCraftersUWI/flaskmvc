@@ -63,6 +63,19 @@ def courses_Sorted_byRating_Objects():
     return Course.query.order_by(Course.rating.asc()).all()
     
 
+def isCourseOffered(courseCode):
+    course = Course.query.filter_by(code=courseCode).first()
+    return course.offered
+
+def get_all_OfferedCodes():
+    offered = list_all_courses()
+    offeredcodes=[]
+
+    for c in offered:
+        offeredcodes.append(c.code)
+    
+    return offeredcodes
+
 def get_prerequisites(code):
     course = get_course_by_courseCode(code)
     prereqs = get_all_prerequisites(course.courseName)
@@ -76,5 +89,7 @@ def get_ratings(code):
     course = get_course_by_courseCode(code)
     return course.rating if course else 0
 
+def list_all_courses():
+    return (Course.query.all())
 
 

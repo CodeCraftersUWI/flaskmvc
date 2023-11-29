@@ -19,6 +19,17 @@ def get_staff_by_id(ID):
     return Staff.query.filter_by(id=ID).first()
 
 
+def addSemesterCourses(courseCode):
+    course = get_course_by_courseCode(courseCode)
+    if course:
+        semCourses = CoursesOfferedPerSem(courseCode)
+        db.session.add(semCourses)
+        db.session.commit()
+        return semCourses
+    else:
+        print("Course not found")
+
+
 # def add_program(self, program_name, description):
 #     try:
 #         new_program = Program(name=program_name, description=description)

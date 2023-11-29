@@ -28,7 +28,8 @@ from App.controllers import (
     get_allCore,
     addCourseToPlan,
     get_student_by_id,
-    generator
+    generator,
+    list_all_courses
     )
 
 test1 = ["COMP1600",  "COMP1601", "COMP1602", "COMP1603", "COMP1604", "MATH1115", "INFO1600", "INFO1601",  "FOUN1101", "FOUN1105", "FOUN1301", "COMP3605", "COMP3606", "COMP3607", "COMP3608",]
@@ -70,7 +71,7 @@ def initialize():
     with open(file_path1, 'r') as file:
         for i, line in enumerate(file):
             line = line.strip()
-            addSemesterCourses(line)
+            # addSemesterCourses(line)
 
 
 
@@ -183,12 +184,12 @@ def add_program_requirements(name,code,num):
   response=create_programCourse(name, code, num)
   print(response)
 
-@staff_cli.command("addofferedcourse",help='testing add courses offered feature')
-@click.argument("code", type=str)
-def add_offered_course(code):
-  course=addSemesterCourses(code)
-  if course:
-    print(f'Course details: {course}')
+# @staff_cli.command("addofferedcourse",help='testing add courses offered feature')
+# @click.argument("code", type=str)
+# def add_offered_course(code):
+#   course=addSemesterCourses(code)
+#   if course:
+#     print(f'Course details: {course}')
 
 
 app.cli.add_command(staff_cli)
@@ -361,6 +362,9 @@ course = AppGroup('course', help = 'Program object commands')
 #     newcourse = create_course(file_path)
 #     print(f'Course created with course code "{newcourse.courseCode}", name "{newcourse.courseName}", credits "{newcourse.credits}", ratings "{newcourse.rating}" and prerequites "{newcourse.prerequisites}"')
 
+@course.command('all', help = 'get all the courses in the db') 
+def list_courses():
+    print(list_all_courses())
 
 @course.command('prereqs', help='Create a new course')
 @click.argument('code', type=str)
@@ -382,11 +386,11 @@ def get_course(code):
     for r in prereqs:
         print(f'{r.prereq_courseCode}')
 
-@course.command('nextsem', help='Add a course to offered courses')
-@click.argument('code', type=str)
-def add_course(code):
-    course = addSemesterCourses(code)
-    print(f'Course Name: {course.courseName}') if course else print(f'error')
+# @course.command('nextsem', help='Add a course to offered courses')
+# @click.argument('code', type=str)
+# def add_course(code):
+#     course = addSemesterCourses(code)
+#     print(f'Course Name: {course.courseName}') if course else print(f'error')
 
 @course.command('getNextSemCourses', help='Get all the courses offered next semester')
 def allSemCourses():
@@ -400,3 +404,6 @@ def allSemCourses():
     
 
 app.cli.add_command(course)
+
+#lalalal this is a test comment
+

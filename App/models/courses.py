@@ -9,8 +9,9 @@ class Course(db.Model):
     rating = db.Column(db.Integer)
     semester = db.Column(db.Integer)
     level = db.Column(db.Integer)   #the degree year that the course is typically taken
+    offered = db.Column(db.Boolean) #whether or not the course is currently offered
 
-    offered = db.relationship('CoursesOfferedPerSem', backref ='courses', lazy=True)
+    # offered = db.relationship('CoursesOfferedPerSem', backref ='courses', lazy=True)
     students = db.relationship('StudentCourseHistory', backref='courses', lazy=True)
     programs = db.relationship('ProgramCourses', backref='courses', lazy=True)
     prerequisites = db.relationship('Prerequisites', backref='courses', lazy = True)
@@ -28,6 +29,10 @@ class Course(db.Model):
         return{
             'Course Code:': self.courseCode,
             'Course Name: ': self.courseName,
+            'Credits: ': self.credits,
+            'Semester: ': self.semester,
+            'Level: ': self.level, 
             'Course Rating: ': self.rating,
             'No. of Credits: ': self.credits,
+            'Prerequisites: ': [prereq.get_json() for prereq in self.prerequisites]
         }
