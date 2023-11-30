@@ -54,9 +54,9 @@ def initialize():
     create_student(816, "boo", "testing", "Computer Science Major")
     create_staff("adminpass","999", "admin")
     
-    for c in test1:
-        addCoursetoHistory(816, c)
-    print('Student course history updated')
+    # for c in test1:
+    #     addCoursetoHistory(816, c)
+    # print('Student course history updated')
 
     with open(file_path, 'r') as file:
         for i, line in enumerate(file):

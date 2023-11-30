@@ -1,9 +1,15 @@
 from App.models import Prerequisites
 from App.database import db
 
-def create_prereq(prereqCode, courseName):
-    prereq = Prerequisites(prereqCode, courseName)
-    db.session.add(prereq)
+# def create_prereq(prereqCode, courseName):
+#     prereq = Prerequisites(prereqCode, courseName)
+#     db.session.add(prereq)
+#     db.session.commit()
+
+def create_prereq(course, preReqCode):
+    new_prereq = Prerequisites(course, preReqCode)
+    # print(new_prereq.course)
+    db.session.add(new_prereq)
     db.session.commit()
 
 def get_all_prerequisites(courseName):
