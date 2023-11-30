@@ -4,32 +4,16 @@ from App.database import db
 import json, csv
 
 def createPrerequistes(courseCode, preReqCodes):
-    print("Course: " + courseCode)
-
     course =  Course.query.filter_by(courseCode = courseCode).first()
-
 
     if course:
         for prereq in preReqCodes:
             prerequisite = Course.query.filter_by(courseCode = prereq).first()
 
             if prerequisite:
-                # create_prereq(courseCode, prereq)
-                new_prereq = Prerequisites(course_code=course, prereq_code= prereq)
-                course.prerequisites.append(new_prereq)
-
-                try:
-                    db.session.add(new_prereq)
-                    db.session.commit()
-                except Exception as e:
-                    db.session.rollback()
-                    print("There was an error...")
-                    print(e)
-                
-                
+                create_prereq(course, courseCode, prereq)
             else: 
                 print("Course " + prereq + " not found. Create a new course before adding it as a prerequisite.")
-                # return ("unable to add prereq")
         
     else:
         return "Unable to add prerequisite. Course not found."
