@@ -16,7 +16,9 @@ from App.controllers import (
     addSemesterCourses,
     get_all_OfferedCodes,
     get_all_programCourses,
-    verify_staff
+    verify_staff,
+    createCourseOffering,
+    deleteCourseOffering
 )
 
 staff_views = Blueprint('staff_views', __name__, template_folder='../templates')
@@ -131,3 +133,41 @@ def addCourse():
      return jsonify(course.get_json()), 200
   else:
     return jsonify({'message': "Course addition unsucessful"}), 400
+  
+@staff_views.route('/staff/addCourseOffering', methods=['POST'])
+@login_required
+def addCourseOffering():
+  data=request.json
+  courseCode=data['code']
+  year = data['year']
+  sem = data['sem']
+  courseCode=courseCode.replace(" ","").upper()   #ensure consistent course code format
+
+  username=current_user.username
+  if not verify_staff(username):    #verify that the user is staff
+    return jsonify({'message': 'You are unauthorized to perform this action. Please login with Staff credentials.'}), 401
+
+  offering = createCourseOffering(courseCode, year, sem)
+  if offering is not None:
+     return jsonify(offering.get_json()), 200
+  else:
+    return jsonify({'message': "Course offering creation unsucessful"}), 400
+  
+@staff_views.route('/staff/removeCourseOffering', methods=['DELETE'])
+@login_required
+def removeCourseOffering():
+  data=request.json
+  courseCode=data['code']
+  year = data['year']
+  sem = data['sem']
+  courseCode=courseCode.replace(" ","").upper()   #ensure consistent course code format
+
+  username=current_user.username
+  if not verify_staff(username):    #verify that the user is staff
+    return jsonify({'message': 'You are unauthorized to perform this action. Please login with Staff credentials.'}), 401
+
+  deleted = deleteCourseOffering(courseCode, year, sem)
+  if deleted:
+     return jsonify({'message:': "Course offering deletion succesful"}), 200
+  else:
+    return jsonify({'message': "Course offering deletion unsucessful"}), 404

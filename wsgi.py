@@ -18,7 +18,9 @@ from App.controllers import (
     get_prerequisites,
     get_all_courses,
     create_programCourse,
-    addSemesterCourses,
+    createCourseOffering,
+    deleteCourseOffering,
+    getCourseOfferingsByYearAndSemester,
     create_student,
     create_staff,
     get_program_by_name,
@@ -108,7 +110,16 @@ def list_user_command(format):
 
 app.cli.add_command(user_cli) # add the group to the cli
 
-
+@user_cli.command("getcourseoffering",help='testing remove courses offering feature')
+@click.argument("year", type=str)
+@click.argument("sem", type=int)
+def get_course_offering(year, sem):
+  offerings=getCourseOfferingsByYearAndSemester(year, sem)
+  if offerings:
+    for offering in offerings:
+      print(f'{offering}')
+  else:
+    print(f'Error retrieving course offerings')
 # ... (previous code remains the same)
 
 '''
@@ -184,13 +195,27 @@ def add_program_requirements(name,code,num):
   response=create_programCourse(name, code, num)
   print(response)
 
-# @staff_cli.command("addofferedcourse",help='testing add courses offered feature')
-# @click.argument("code", type=str)
-# def add_offered_course(code):
-#   course=addSemesterCourses(code)
-#   if course:
-#     print(f'Course details: {course}')
+@staff_cli.command("addcourseoffering",help='testing add courses offering feature')
+@click.argument("code", type=str)
+@click.argument("year", type=str)
+@click.argument("sem", type=int)
+def add_course_offering(code, year, sem):
+  offering=createCourseOffering(code, year, sem)
+  if offering:
+    print(f'Course offering: {offering}')
+  else:
+    print(f'Error creating course offering')
 
+@staff_cli.command("removecourseoffering",help='testing remove courses offering feature')
+@click.argument("code", type=str)
+@click.argument("year", type=str)
+@click.argument("sem", type=int)
+def remove_course_offering(code, year, sem):
+  deleted=deleteCourseOffering(code, year, sem)
+  if deleted:
+    print(f'Course offering deleted')
+  else:
+    print(f'Error deleting course offering')
 
 app.cli.add_command(staff_cli)
 
