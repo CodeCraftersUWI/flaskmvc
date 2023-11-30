@@ -1,5 +1,5 @@
 from App.database import db
-from .courses import Course
+from App.models.courses import Course
 
 class CourseOfferings(db.Model):
     id = db.Column(db.Integer, primary_key = True)
