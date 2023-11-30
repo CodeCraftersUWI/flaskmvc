@@ -117,9 +117,8 @@ def get_course_offering(year, sem):
   offerings=getCourseOfferingsByYearAndSemester(year, sem)
   if offerings:
     for offering in offerings:
-      print(f'{offering}')
-  else:
-    print(f'Error retrieving course offerings')
+      print(f'{offering.get_json()}')
+
 # ... (previous code remains the same)
 
 '''
@@ -202,20 +201,14 @@ def add_program_requirements(name,code,num):
 def add_course_offering(code, year, sem):
   offering=createCourseOffering(code, year, sem)
   if offering:
-    print(f'Course offering: {offering}')
-  else:
-    print(f'Error creating course offering')
+    print(f'Course offering: {offering.get_json()}')
 
 @staff_cli.command("removecourseoffering",help='testing remove courses offering feature')
 @click.argument("code", type=str)
 @click.argument("year", type=str)
 @click.argument("sem", type=int)
 def remove_course_offering(code, year, sem):
-  deleted=deleteCourseOffering(code, year, sem)
-  if deleted:
-    print(f'Course offering deleted')
-  else:
-    print(f'Error deleting course offering')
+  deleteCourseOffering(code, year, sem)
 
 app.cli.add_command(staff_cli)
 

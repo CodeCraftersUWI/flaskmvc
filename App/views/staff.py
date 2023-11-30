@@ -13,7 +13,6 @@ from App.controllers import (
     get_all_users,
     get_all_users_json,
     jwt_required,
-    addSemesterCourses,
     get_all_OfferedCodes,
     get_all_programCourses,
     verify_staff,
@@ -141,7 +140,6 @@ def addCourseOffering():
   courseCode=data['code']
   year = data['year']
   sem = data['sem']
-  courseCode=courseCode.replace(" ","").upper()   #ensure consistent course code format
 
   username=current_user.username
   if not verify_staff(username):    #verify that the user is staff

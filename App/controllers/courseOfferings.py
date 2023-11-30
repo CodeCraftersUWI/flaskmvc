@@ -1,7 +1,8 @@
 from App.database import db
-from .models import CourseOfferings
+from App.models import CourseOfferings
 
 def createCourseOffering(courseCode, academic_year, semester):
+    courseCode=courseCode.replace(" ","").upper()   #ensure consistent course code format
     offering = CourseOfferings.query.filter_by(course_code=courseCode, academic_year=academic_year, semester=semester).first()
     if offering:
         print("Course offering exists already")
@@ -10,7 +11,7 @@ def createCourseOffering(courseCode, academic_year, semester):
         if CourseOfferings.checkAcademicYearFormat(academic_year):
             if semester == 1 or semester == 2 or semester == 3:
                 if CourseOfferings.getCourse(courseCode):
-                    offeredCourse = CourseOfferings(semester, academic_year, courseCode)
+                    offeredCourse = CourseOfferings(academic_year, semester, courseCode)
                     if offeredCourse:
                         db.session.add(offeredCourse)
                         db.session.commit()
@@ -65,6 +66,7 @@ def getCourseOfferingsByYearAndSemester(year, sem):
         print("Academic year format incorrect. Should be yyyy/yyyy e.g. 2022/2023")
 
 def deleteCourseOffering(courseCode, academic_year, semester):
+    courseCode=courseCode.replace(" ","").upper()   #ensure consistent course code format
     try:
         offering = CourseOfferings.query.filter_by(course_code=courseCode, academic_year=academic_year, semester=semester).first()
         if offering:
@@ -72,8 +74,10 @@ def deleteCourseOffering(courseCode, academic_year, semester):
             db.session.commit()
             print("Course offering deleted successfully")
             return True
+        else: 
+            print("The course offering you are trying to delete does not exist")
     except Exception as e:
         db.session.rollback()
-        print(f"An error occured when trying to delete a course from the course offerings: {e}")
+        print(f"An error occured when trying to delete the course from the course offerings: {e}")
         return False
 

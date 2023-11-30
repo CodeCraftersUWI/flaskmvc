@@ -7,6 +7,11 @@ class CourseOfferings(db.Model):
     semester = db.Column(db.Integer, nullable=False)
     course_code = db.Column(db.String, nullable=False)
 
+    def __init__(self, academic_year, semester, course_code):
+        self.academic_year = academic_year
+        self.semester = semester
+        self.course_code = course_code
+        
     def get_json(self):
         return{
             'id': self.id,
@@ -20,7 +25,7 @@ class CourseOfferings(db.Model):
     
     def checkAcademicYearFormat(academic_year):
         s = academic_year.split("/")
-        if s.size() > 2:
+        if len(s) != 2:
             return False
         elif int(s[0]) != int(s[1])-1:
             return False
