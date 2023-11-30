@@ -1,45 +1,30 @@
-from App.models import Course, Prerequisites
+from App.models import Course
 from App.controllers.prerequistes import (create_prereq, get_all_prerequisites)
 from App.database import db
 import json, csv
 
-def createPrerequistes(courseCode, preReqCodes):
-    print("Course: " + courseCode)
-
+def createPrerequisites(courseCode, preReqCodes):    
     course =  Course.query.filter_by(courseCode = courseCode).first()
-
 
     if course:
         for prereq in preReqCodes:
             prerequisite = Course.query.filter_by(courseCode = prereq).first()
 
             if prerequisite:
-                # create_prereq(courseCode, prereq)
-                new_prereq = Prerequisites(course_code=course, prereq_code= prereq)
-                course.prerequisites.append(new_prereq)
-
-                try:
-                    db.session.add(new_prereq)
-                    db.session.commit()
-                except Exception as e:
-                    db.session.rollback()
-                    print("There was an error...")
-                    print(e)
-                
-                
+                success = create_prereq(course, prereq)
             else: 
-                print("Course " + prereq + " not found. Create a new course before adding it as a prerequisite.")
-                # return ("unable to add prereq")
+                return("Course " + prereq + " not found. Create a new course before adding it as a prerequisite.")
         
+        if (success == False):
+            return ("One or more prerequisites already exist for this course.")
     else:
-        return "Unable to add prerequisite. Course not found."
+        return ("Unable to add prerequisite. Course not found.")
     
-
+    return ("Successfully added Prerequisite!")
 
     
 
 def create_course(code, name, credits, rating, semester, level, offered, prereqs):
-
 
     already = get_course_by_courseCode(code)
     if already is None:
@@ -47,16 +32,13 @@ def create_course(code, name, credits, rating, semester, level, offered, prereqs
         db.session.add(course)
         db.session.commit()
 
-
         if (prereqs[0] != ""):
-            createPrerequistes(code, prereqs)
+            createPrerequisites(code, prereqs)
 
-            
-        
-        
         return course
     else:
         return None
+
 
 
 def createCoursesfromFile(file_path):
