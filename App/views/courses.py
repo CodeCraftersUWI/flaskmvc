@@ -24,6 +24,7 @@ def list_courses_json():
 @course_views.route('/course', methods = ['POST'])
 def new_course():
     data = request.json
+
     course = create_course(data['code'], 
                   data['name'], 
                   data['credits'], 

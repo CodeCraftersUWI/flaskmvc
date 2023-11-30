@@ -3,23 +3,57 @@ from App.controllers.prerequistes import (create_prereq, get_all_prerequisites)
 from App.database import db
 import json, csv
 
-def createPrerequistes(prereqs, courseName):
-    for prereq_code in prereqs:
-        prereq_course = Course.query.filter_by(courseCode=prereq_code).first()
+def createPrerequistes(courseCode, preReqCodes):
+    print("Course: " + courseCode)
+
+    course =  Course.query.filter_by(courseCode = courseCode).first()
+
+
+    if course:
+        for prereq in preReqCodes:
+            prerequisite = Course.query.filter_by(courseCode = prereq).first()
+
+            if prerequisite:
+                # create_prereq(courseCode, prereq)
+                new_prereq = Prerequisites(course_code=course, prereq_code= prereq)
+                course.prerequisites.append(new_prereq)
+
+                try:
+                    db.session.add(new_prereq)
+                    db.session.commit()
+                except Exception as e:
+                    db.session.rollback()
+                    print("There was an error...")
+                    print(e)
+                
+                
+            else: 
+                print("Course " + prereq + " not found. Create a new course before adding it as a prerequisite.")
+                # return ("unable to add prereq")
         
-        if prereq_course:
-            create_prereq(prereq_code,courseName) 
+    else:
+        return "Unable to add prerequisite. Course not found."
+    
+
+
+    
 
 def create_course(code, name, credits, rating, semester, level, offered, prereqs):
+
+
     already = get_course_by_courseCode(code)
     if already is None:
         course = Course(code, name, credits, rating, semester, level, offered)
-
-        if prereqs:
-            createPrerequistes(prereqs, name)
-            
         db.session.add(course)
         db.session.commit()
+
+
+        if (prereqs[0] != ""):
+            createPrerequistes(code, prereqs)
+
+            
+        
+        
         return course
     else:
         return None
