@@ -1,9 +1,9 @@
-from App.models import Course, Prerequisites
+from App.models import Course
 from App.controllers.prerequistes import (create_prereq, get_all_prerequisites)
 from App.database import db
 import json, csv
 
-def createPrerequistes(courseCode, preReqCodes):
+def createPrerequisites(courseCode, preReqCodes):    
     course =  Course.query.filter_by(courseCode = courseCode).first()
 
     if course:
@@ -11,14 +11,16 @@ def createPrerequistes(courseCode, preReqCodes):
             prerequisite = Course.query.filter_by(courseCode = prereq).first()
 
             if prerequisite:
-                create_prereq(course, courseCode, prereq)
+                success = create_prereq(course, prereq)
             else: 
-                print("Course " + prereq + " not found. Create a new course before adding it as a prerequisite.")
+                return("Course " + prereq + " not found. Create a new course before adding it as a prerequisite.")
         
+        if (success == False):
+            return ("One or more prerequisites already exist for this course.")
     else:
-        return "Unable to add prerequisite. Course not found."
+        return ("Unable to add prerequisite. Course not found.")
     
-
+    return ("Successfully added Prerequisite!")
 
     
 

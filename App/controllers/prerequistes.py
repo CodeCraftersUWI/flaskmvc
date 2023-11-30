@@ -6,8 +6,14 @@ from App.database import db
 #     db.session.add(prereq)
 #     db.session.commit()
 
-def create_prereq(course, courseCode, prereqCode):
-    new_prereq = Prerequisites(course_code=course, prereq_code= prereqCode)
+def create_prereq(course, prereqCode):
+    exists = Prerequisites.query.filter_by(course_code= course.courseCode, prereq_code= prereqCode).first()
+
+    if exists:
+        return False
+    
+
+    new_prereq = Prerequisites(course_code=course.courseCode, prereq_code= prereqCode)
     course.prerequisites.append(new_prereq)
 
     try:

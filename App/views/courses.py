@@ -7,8 +7,8 @@ from.index import index_views
 
 from App.controllers import (
     list_all_courses,
-    create_course
-
+    create_course,
+    createPrerequisites
 )
 
 course_views = Blueprint('course_views', __name__, template_folder='../templates')
@@ -34,3 +34,9 @@ def new_course():
                   data['offered'],
                   data['prereqs'])
     return "Successfully Created course!"
+
+@course_views.route('/course/prereq', methods = ['POST'])
+def add_prereq():
+    data = request.json
+
+    return createPrerequisites(data['courseCode'], data['prereqCode'])
