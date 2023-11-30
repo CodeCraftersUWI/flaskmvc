@@ -1,19 +1,21 @@
 from App.database import db
-from sqlalchemy.orm import relationship
+class Prerequisites(db.Model):
 
-class Prerequisite(db.Model):
-    prereqID = db.Column(db.Integer,primary_key= True)
-    courseCode= db.Column(db.String(8),db.ForeignKey('course.courseCode', nullable=False))
-    prerequisiteCourses= db.relationship('Prerequisite', backref= db.backref('course', laxy='joined'))
+    id = db.Column(db.Integer, primary_key=True)
+    prereq_courseCode = db.Column(db.ForeignKey('course.courseCode'))
+    courseName = db.Column(db.String(25))
+
+    associated_course = db.relationship('Course', back_populates='prerequisites', overlaps="courses")
     
-    def addPrerequisite(self, prereq_course):
-        self.prerequisites.append(prereq_course)
-        db.session.commit()
     
 
-    def edit_course(self, courseName, courseCode, credits, difficulty):
-        self.courseName = course_name
-        self.courseCode = course_code
-        self.credits = credits
-        self.difficulty = difficulty
-        db.session.commit()
+    def __init__(self, prereqCode, nameofCourse):
+        self.prereq_courseCode = prereqCode
+        self.courseName = nameofCourse
+
+    def get_json(self):
+        return{
+            'prereq_id': self.id,
+            'prerequisite_courseCode': self.prereq_courseCode,
+            'prerequisite_course':self.courseName
+        } 
