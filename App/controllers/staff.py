@@ -1,6 +1,7 @@
 from App.models import Program, Course, Staff
 from App.database import db
 
+
 def create_staff(password, staff_id, name):
     new_staff = Staff(password, staff_id, name)
     db.session.add(new_staff)
@@ -16,6 +17,17 @@ def verify_staff(username):
 
 def get_staff_by_id(ID):
     return Staff.query.filter_by(id=ID).first()
+
+
+def addSemesterCourses(courseCode):
+    course = get_course_by_courseCode(courseCode)
+    if course:
+        semCourses = CoursesOfferedPerSem(courseCode)
+        db.session.add(semCourses)
+        db.session.commit()
+        return semCourses
+    else:
+        print("Course not found")
 
 
 # def add_program(self, program_name, description):
