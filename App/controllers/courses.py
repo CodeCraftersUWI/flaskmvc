@@ -26,23 +26,19 @@ def createPrerequisites(courseCode, preReqCodes):
 
 def create_course(code, name, credits, rating, semester, level, offered, prereqs):
 
-
     already = get_course_by_courseCode(code)
     if already is None:
         course = Course(code, name, credits, rating, semester, level, offered)
         db.session.add(course)
         db.session.commit()
 
-
         if (prereqs[0] != ""):
-            createPrerequistes(code, prereqs)
+            createPrerequisites(code, prereqs)
 
-            
-        
-        
         return course
     else:
         return None
+
 
 
 def createCoursesfromFile(file_path):
