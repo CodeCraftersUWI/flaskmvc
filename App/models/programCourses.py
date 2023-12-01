@@ -1,23 +1,20 @@
 from App.database import db
-class ProgramCourses(db.Model):
-    __tablename__ ='program_courses'
-    id = db.Column(db.Integer, primary_key=True)
-    program_id = db.Column(db.ForeignKey('program.id'))
-    code = db.Column(db.ForeignKey('course.courseCode'))
-    courseType = db.Column(db.Integer)
+from sqlalchemy import Column, Integer, ForeignKey
+from sqlalchemy.orm import relationship
 
-    associated_program = db.relationship('Program', back_populates='courses', overlaps="program")
-    associated_course = db.relationship('Course', back_populates='programs', overlaps="courses")
+class ProgramCourse(db.Model):
+    __tablename__ = 'program_courses'
 
-    def __init__(self, programID, courseCode, num):
-        self.program_id = programID
-        self.code = courseCode
-        self.courseType = num
-    
-    def get_json(self):
-        return{
-            'Program Course ID:' : self.id,
-            'Program ID:': self.program_id,
-            'Course Code: ': self.code,
-            'Course Type: ': self.courseType
-        }
+    programCourseID = Column(Integer, primary_key=True)
+    courseCode = Column(db.String(8), ForeignKey('courses.courseCode'), nullable=False)
+    programID = Column(Integer, ForeignKey('programs.programID'), nullable=False)
+
+    program = relationship('Program', backref=db.backref('program_courses'))
+    course = relationship('Course', backref=db.backref('program_courses'))
+
+    def __init__(self, course_code, program_id):
+        self.courseCode = course_code
+        self.programID = program_id
+
+    def __repr__(self):
+        return f"<ProgramCourse {self.programCourseID}>"
