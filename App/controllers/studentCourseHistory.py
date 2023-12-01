@@ -2,18 +2,31 @@ from App.models import StudentCourseHistory
 from App.controllers import (get_student_by_id, get_course_by_courseCode)
 from App.database import db
 
-def addCoursetoHistory(studentid, code):
-    student  = get_student_by_id(studentid)
-    if student:
-        course = get_course_by_courseCode(code)
-        if course:
-            completed = StudentCourseHistory(studentid, code)
-            db.session.add(completed)
-            db.session.commit()
-        else:
-            print("Course doesn't exist")
-    else:
-        print("Student doesn't exist")
+def addCourseToHistory(student_id, course_code, grade=None):
+
+    try:
+        student = get_student_by_id(student_id)
+        course = get_course_by_courseCode(course_code)
+
+        if not student: 
+            raise ValueError("Student does not exist")
+
+        if not course:
+            raise ValueError("Course does not exist")
+
+        enrollment = StudentCourseHistory(
+            student_id=student_id,
+            course_code=course_code,
+            grade=grade
+        )
+
+        db.session.add(enrollment)  
+        db.session.commit()
+
+    except ValueError as e:
+        print(e)  
+
+    return enrollment
          
 
 def getCompletedCourses(id):

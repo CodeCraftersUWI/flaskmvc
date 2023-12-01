@@ -138,15 +138,16 @@ def create_student_command(student_id, password, name, programname):
 @student_cli.command("addCourse", help="Student adds a completed course to their history")
 @click.argument("student_id", type=str)
 @click.argument("code", type=str)
-def addCourse(student_id, code):
-    addCoursetoHistory(student_id, code)
+@click.argument("grade", default="A")
+def addCourse(student_id, code, grade):
+    addCoursetoHistory(student_id, code, grade)
 
 @student_cli.command("getCompleted", help="Get all of a student completed courses")
 @click.argument("student_id", type=str)
 def completed(student_id):
-    comp = getCompletedCourseCodes(student_id)
-    for c in comp:
-        print(f'{c}')
+    courses = getCompletedCourseCodes(student_id)
+    for c in courses:
+        print(c.get_json())
 
 @student_cli.command("addCourseToPlan", help="Adds a course to a student's course plan")
 def courseToPlan():
