@@ -1,4 +1,5 @@
 import click, pytest, sys
+import random
 import csv
 from flask import Flask
 from App.controllers.student import create_student
@@ -55,7 +56,8 @@ def initialize():
     create_staff("adminpass","999", "admin")
     
     for c in test1:
-        addCoursetoHistory(816, c)
+        grade = random.choice(['A', 'B', 'C', 'F'])
+        addCoursetoHistory(816, c, grade)
     print('Student course history updated')
 
     with open(file_path, 'r') as file:
@@ -144,7 +146,7 @@ addCourse.params = [
 def completed(student_id):
     comp = getCompletedCourseCodes(student_id)
     for c in comp:
-        print(f'{c}')
+        print(f'Course Code: {c.code}, Grade: {c.grade}')
 
 @student_cli.command("addCourseToPlan", help="Adds a course to a student's course plan")
 def courseToPlan():

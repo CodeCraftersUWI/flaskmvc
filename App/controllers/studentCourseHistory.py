@@ -46,10 +46,10 @@ def getCompletedCourses(id):
     return StudentCourseHistory.query.filter_by(studentID=id).all()
 
 def getCompletedCourseCodes(id):
-    completed = getCompletedCourses(id)
+    completed_courses = getCompletedCourses(id)
     codes = []
     
-    for c in completed:
-        codes.append(c.code)
+    for course in completed_courses:
+        codes.append(course.code)
     
-    return codes
+    return completed_courses  # Return instances, not just codes

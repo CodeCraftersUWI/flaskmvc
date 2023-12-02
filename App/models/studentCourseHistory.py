@@ -10,7 +10,7 @@ class StudentCourseHistory(db.Model):
     associated_course = db.relationship('Course', back_populates='students', overlaps="courses")
     associated_student = db.relationship('Student', back_populates='courses', overlaps="student")
 
-    def __init__(self, student_id, course_code, grade=None):
+    def __init__(self, student_id, course_code, grade):
         self.studentID = student_id
         self.code = course_code
         self.grade = grade
