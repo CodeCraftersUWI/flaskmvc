@@ -1,7 +1,7 @@
 from App.models import FastestGraduation, CoursePlan, Program, SemesterCourse, Student
 from App.database import db
 
-class FastestGraduation:
+
     
     def create_fastest_graduation_plan(student_id):
         fastest_graduation = FastestGraduation(student_id)
