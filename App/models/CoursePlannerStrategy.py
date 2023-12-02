@@ -6,5 +6,5 @@ from abc import ABC, abstractmethod
 # Strategy Interface
 class CoursePlannerStrategy(ABC):
     @abstractmethod
-    def planCourses(self, data: List[str], target: CoursePlan) -> CoursePlan:
+    def planCourses(self, data: List[str]) -> CoursePlan:
         pass

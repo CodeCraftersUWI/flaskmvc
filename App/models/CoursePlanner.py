@@ -10,5 +10,5 @@ class CoursePlanner:
     def set_strategy(self, strategy: CoursePlannerStrategy):
         self._strategy = strategy
 
-    def plan_courses(self, data: List[str], target: CoursePlan) -> CoursePlan:
-        return self._strategy.search(data, target)
+    def plan_courses(self, data: List[str]) -> CoursePlan:
+        return self._strategy.search(data)
