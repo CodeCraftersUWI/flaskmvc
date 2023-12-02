@@ -18,7 +18,9 @@ from App.controllers import (
     get_prerequisites,
     get_all_courses,
     create_programCourse,
-    addSemesterCourses,
+    createCourseOffering,
+    deleteCourseOffering,
+    getCourseOfferingsByYearAndSemester,
     create_student,
     create_staff,
     get_program_by_name,
@@ -108,6 +110,14 @@ def list_user_command(format):
 
 app.cli.add_command(user_cli) # add the group to the cli
 
+@user_cli.command("getcourseoffering",help='testing remove courses offering feature')
+@click.argument("year", type=str)
+@click.argument("sem", type=int)
+def get_course_offering(year, sem):
+  offerings=getCourseOfferingsByYearAndSemester(year, sem)
+  if offerings:
+    for offering in offerings:
+      print(f'{offering.get_json()}')
 
 # ... (previous code remains the same)
 
@@ -128,15 +138,16 @@ def create_student_command(student_id, password, name, programname):
 @student_cli.command("addCourse", help="Student adds a completed course to their history")
 @click.argument("student_id", type=str)
 @click.argument("code", type=str)
-def addCourse(student_id, code):
-    addCoursetoHistory(student_id, code)
+@click.argument("grade", default="A")
+def addCourse(student_id, code, grade):
+    addCoursetoHistory(student_id, code, grade)
 
 @student_cli.command("getCompleted", help="Get all of a student completed courses")
 @click.argument("student_id", type=str)
 def completed(student_id):
-    comp = getCompletedCourseCodes(student_id)
-    for c in comp:
-        print(f'{c}')
+    courses = getCompletedCourseCodes(student_id)
+    for c in courses:
+        print(c.get_json())
 
 @student_cli.command("addCourseToPlan", help="Adds a course to a student's course plan")
 def courseToPlan():
@@ -184,13 +195,21 @@ def add_program_requirements(name,code,num):
   response=create_programCourse(name, code, num)
   print(response)
 
-# @staff_cli.command("addofferedcourse",help='testing add courses offered feature')
-# @click.argument("code", type=str)
-# def add_offered_course(code):
-#   course=addSemesterCourses(code)
-#   if course:
-#     print(f'Course details: {course}')
+@staff_cli.command("addcourseoffering",help='testing add courses offering feature')
+@click.argument("code", type=str)
+@click.argument("year", type=str)
+@click.argument("sem", type=int)
+def add_course_offering(code, year, sem):
+  offering=createCourseOffering(code, year, sem)
+  if offering:
+    print(f'Course offering: {offering.get_json()}')
 
+@staff_cli.command("removecourseoffering",help='testing remove courses offering feature')
+@click.argument("code", type=str)
+@click.argument("year", type=str)
+@click.argument("sem", type=int)
+def remove_course_offering(code, year, sem):
+  deleteCourseOffering(code, year, sem)
 
 app.cli.add_command(staff_cli)
 
