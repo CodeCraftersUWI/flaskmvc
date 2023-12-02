@@ -2,23 +2,22 @@ from App.database import db
 
 class StudentCourseHistory(db.Model):
     __tablename__ = 'studentCourses'
-    
-    id = db.Column(db.Integer, primary_key=True)  
-    student_id = db.Column(db.String, db.ForeignKey('student.id'))
-    course_code = db.Column(db.String, db.ForeignKey('courses.courseCode'))
-    grade = db.Column(db.String) 
-    
-    associated_course = db.relationship('Course', back_populates='students')
-    associated_student = db.relationship('Student', back_populates='courses')
+    id = db.Column(db.Integer, primary_key=True)
+    studentID = db.Column(db.ForeignKey('student.id'))
+    code = db.Column(db.ForeignKey('course.courseCode'))
+    grade = db.Column(db.String)
 
-    def __init__(self, student_id, course_code):
-        self.student_id = student_id
-        self.course_code = course_code
+    associated_course = db.relationship('Course', back_populates='students', overlaps="courses")
+    associated_student = db.relationship('Student', back_populates='courses', overlaps="student")
+
+    def __init__(self, student_id, course_code, grade):
+        self.studentID = student_id
+        self.code = course_code
+        self.grade = grade
     
     def get_json(self):
-        return {
-            'StudentCourseHistory ID': self.id,
-            'Student ID': self.student_id,
-            'Course Code': self.course_code,
+        return{
+            'Program ID': self.id, #is this suppose to be id or program_id alone 
+            'Course Code': self.code,
             'Grade': self.grade
         }
