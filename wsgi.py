@@ -1,4 +1,5 @@
 import click, pytest, sys
+import random
 import csv
 from flask import Flask
 from App.controllers.student import create_student
@@ -57,7 +58,8 @@ def initialize():
     create_staff("adminpass","999", "admin")
     
     for c in test1:
-        addCoursetoHistory(816, c)
+        grade = random.choice(['A', 'B', 'C', 'F'])
+        addCoursetoHistory(816, c, grade)
     print('Student course history updated')
 
     with open(file_path, 'r') as file:
@@ -138,15 +140,23 @@ def create_student_command(student_id, password, name, programname):
 @student_cli.command("addCourse", help="Student adds a completed course to their history")
 @click.argument("student_id", type=str)
 @click.argument("code", type=str)
-def addCourse(student_id, code):
-    addCoursetoHistory(student_id, code)
+@click.argument("grade", type=str)
+@click.pass_context
+def addCourse(ctx, student_id, code, grade):
+    addCoursetoHistory(student_id, code, grade)
+
+addCourse.params = [
+    click.Argument(["student_id"], type=str),
+    click.Argument(["code"], type=str),
+    click.Argument(["grade"], type=str)
+]
 
 @student_cli.command("getCompleted", help="Get all of a student completed courses")
 @click.argument("student_id", type=str)
 def completed(student_id):
     comp = getCompletedCourseCodes(student_id)
     for c in comp:
-        print(f'{c}')
+        print(f'Course Code: {c.code}, Grade: {c.grade}')
 
 @student_cli.command("addCourseToPlan", help="Adds a course to a student's course plan")
 def courseToPlan():

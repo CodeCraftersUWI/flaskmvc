@@ -1,28 +1,44 @@
-from App.models import Course, Prerequisites
+from App.models import Course
 from App.controllers.prerequistes import (create_prereq, get_all_prerequisites)
 from App.database import db
 import json, csv
 
-def createPrerequistes(prereqs, courseName):
-    for prereq_code in prereqs:
-        prereq_course = Course.query.filter_by(courseCode=prereq_code).first()
-        
-        if prereq_course:
-            create_prereq(prereq_code,courseName) 
+def createPrerequisites(courseCode, preReqCodes):    
+    course =  Course.query.filter_by(courseCode = courseCode).first()
 
-def create_course(code, name, rating, credits, prereqs):
+    if course:
+        for prereq in preReqCodes:
+            prerequisite = Course.query.filter_by(courseCode = prereq).first()
+
+            if prerequisite:
+                success = create_prereq(course, prereq)
+            else: 
+                return("Course " + prereq + " not found. Create a new course before adding it as a prerequisite.")
+        
+        if (success == False):
+            return ("One or more prerequisites already exist for this course.")
+    else:
+        return ("Unable to add prerequisite. Course not found.")
+    
+    return ("Successfully added Prerequisite!")
+
+    
+
+def create_course(code, name, credits, rating, semester, level, offered, prereqs):
+
     already = get_course_by_courseCode(code)
     if already is None:
-        course = Course(code, name, rating, credits)
-
-        if prereqs:
-            createPrerequistes(prereqs, name)
-            
+        course = Course(code, name, credits, rating, semester, level, offered)
         db.session.add(course)
         db.session.commit()
+
+        if (prereqs[0] != ""):
+            createPrerequisites(code, prereqs)
+
         return course
     else:
         return None
+
 
 
 def createCoursesfromFile(file_path):
@@ -34,10 +50,13 @@ def createCoursesfromFile(file_path):
                 courseName = row["courseName"]
                 credits = int(row["numCredits"])
                 rating = int(row["rating"])
+                semester = int(row["semster"])
+                level = int(row["level"])
+                offered = bool(row["offered"])
                 prerequisites_codes = row["preReqs"].split(',')
+                # create_course(courseCode, courseName, rating, credits, prerequisites_codes)
+                create_course(courseCode, courseName, credits, rating, semester, level, offered, prerequisites_codes)
 
-                create_course(courseCode, courseName, rating, credits, prerequisites_codes)
-                
     except FileNotFoundError:
         print("File not found.")
 

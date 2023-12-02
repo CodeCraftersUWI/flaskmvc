@@ -1,9 +1,13 @@
 from App.database import db
+
+
+
 class ProgramCourses(db.Model):
+
     __tablename__ ='program_courses'
     id = db.Column(db.Integer, primary_key=True)
     program_id = db.Column(db.ForeignKey('program.id'))
-    code = db.Column(db.ForeignKey('course.courseCode'))
+    code = db.Column(db.ForeignKey('courses.courseCode'))
     courseType = db.Column(db.Integer)
 
     associated_program = db.relationship('Program', back_populates='courses', overlaps="program")
