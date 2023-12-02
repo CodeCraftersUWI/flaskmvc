@@ -33,11 +33,11 @@ def getCoursePlan(studentid):
     return CoursePlan.query.filter_by(studentId=studentid).first()
 
 def possessPrereqs(Student, course):
-    preqs = getPrereqCodes(course.courseName)
-    completed = getCompletedCourseCodes(Student.id)
-    for course in preqs:
-        if course not in completed:
-            return False
+    # preqs = getPrereqCodes(course.courseName)
+    # completed = getCompletedCourseCodes(Student.id)
+    # for course in preqs:
+    #     if course not in completed:
+    #         return False
     
     return True
 

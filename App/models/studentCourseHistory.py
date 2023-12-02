@@ -8,8 +8,8 @@ class StudentCourseHistory(db.Model):
     course_code = db.Column(db.String, db.ForeignKey('courses.courseCode'))
     grade = db.Column(db.String) 
     
-    associated_course = db.relationship('Course', back_populates='students')
-    associated_student = db.relationship('Student', back_populates='courses')
+    # associated_course = db.relationship('Course', back_populates='students')
+    # associated_student = db.relationship('Student', back_populates='courses')
 
     def __init__(self, student_id, course_code):
         self.student_id = student_id

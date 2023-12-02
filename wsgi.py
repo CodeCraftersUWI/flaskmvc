@@ -25,7 +25,7 @@ from App.controllers import (
     create_staff,
     get_program_by_name,
     get_all_programCourses,
-    addCoursetoHistory,
+    # addCoursetoHistory,
     getCompletedCourseCodes,
     get_allCore,
     addCourseToPlan,
@@ -325,12 +325,12 @@ def create_program_command(name, core, elective, foun):
     
 
 @program.command('core', help='Get program core courses')
-#@click.argument('programname', type=str)
-def get_CoreCourses():
+@click.argument('programname', type=str)
+def get_CoreCourses(programname):
     create_programCourse("Computer Science Major", "COMP2611", 1)
     create_programCourse("Computer Science Major", "COMP3605", 1)
     create_programCourse("Computer Science Major", "COMP3610", 2)
-    core = get_allCore("Computer Science Major")
+    core = get_allCore(programname)
     for c in core:
         print({c.code})
 
@@ -364,7 +364,7 @@ def addProgramCourse(programname, code, type):
 def addProgramCourse(programname):
    courses = get_all_programCourses(programname)
    for c in courses:
-       print(f'{c.code}')
+       print(f'{c.code} {c.courseType}')
 
 app.cli.add_command(program)
 #################################################################

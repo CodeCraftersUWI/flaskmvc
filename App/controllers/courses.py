@@ -83,7 +83,7 @@ def courses_Sorted_byRating_Objects():
     
 
 def isCourseOffered(courseCode):
-    course = Course.query.filter_by(code=courseCode).first()
+    course = Course.query.filter_by(courseCode=courseCode).first()
     return course.offered
 
 def get_all_OfferedCodes():
