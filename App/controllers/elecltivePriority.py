@@ -1,8 +1,7 @@
 from App.models import ElectivePriority, CoursePlan, Program, SemesterCourse, Student
 from App.database import db
 
-class ElectivePriorityController:
-   
+
     def create_elective_priority_plan(student_id):
         elective_priority = ElectivePriority(student_id)
         return elective_priority
