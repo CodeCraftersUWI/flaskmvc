@@ -3,34 +3,32 @@ from App.database import db
 
 class Student(User):
     studentID = db.Column(db.Integer, primary_key=True)
-    firstName = db.Column(db.String(50), nullable = False),
-    lastName = db.Column(db.String(50), nullable = False),
-    email = db.Column(db.String(50), nullable = False, unique = True),
-    studentHistory = db.relationship('SemesterHistory', backref='student', lazy = true),
-    coursePlans = db.relationship('CoursePlan', backref='student', lazy = true)
+    programs = db.relationship('SemesterProgram', secondary = 'student_programs', backref = 'studentID', lazy = True)
+    studentHistory = db.relationship('SemesterHistory', backref='student', lazy = True),
+    coursePlans = db.relationship('CoursePlan', backref='student', lazy = True)
+    userID = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    def __init__(self, id, firstName, lastName, email):
+    def __init__(self, id, firstName, lastName, email, username, password):
+        user = super().__init__(username, password, firstName, lastName, email)
         self.studentID = id
-        self.firstName = firstName
-        self.lastName = lastName
-        self.email = email
+        self.user = user.id
 
     def autogenerateCoursePlan(self, category, degreeType, programID, semesterID):
-        director = new coursePlanDirector()
+        director = CoursePlanDirector()
         builder = None
         
         if category == "Easiest Courses":
-            builder = new EasiestCourses(self.studentID)
-        else if category == "Fastest Graduation"
-            builder = new FastestGraduation(self.studentID)
-        else if category == "Elective Priority"
-            builder = new ElectivePriority(self.studentID)
+            builder = EasiestCourses(self.studentID)
+        elif category == "Fastest Graduation":
+            builder = FastestGraduation(self.studentID)
+        elif category == "Elective Priority":
+            builder = ElectivePriority(self.studentID)
 
         if degreeType == "Minor":
             director.constructMinor(builder, semesterID, programID, self.studentID)
-        else if degreeType == "Major":
+        elif degreeType == "Major":
             director.constructMajor(builder, semesterID, programID, self.studentID)
-        else if degreeType == "Special"
+        elif degreeType == "Special":
             director.constructSpecial(builder, semesterID, programID, self.studentID)
 
         plan = builder.getPlan()
@@ -38,8 +36,7 @@ class Student(User):
             return plan
         return None       
         
-    
-
+        
     def updateStudentHistory(self, year, semesterType):
         semHistory = SemesterHistory(self.studentID, year, semesterType)
         self.studentHistory.append(semHistory)
@@ -70,7 +67,7 @@ class Student(User):
         plan = CoursePlan.query.get(planID).first()
         course = Course.query.get(courseCode).first()
         if plan and course:
-            plan.courses.append(course)-
+            plan.courses.append(course)
             db.session.commit()
         return None
 
@@ -78,13 +75,13 @@ class Student(User):
         plan = CoursePlan.query.get(planID).first()
         course = Course.query.get(courseCode).first()
         if plan and course:
-            plan.courses.remove(course)-
+            plan.courses.remove(course)
             db.session.commit()
         return None
 
     def get_json(self):
         return{'Student ID': self.studentID,
-            'Name': self.firstName self.lastName,
+            'Name': self.firstName + self.lastName,
             'Email' : self.email,
             'Degree Program(s)': self.programs
         }

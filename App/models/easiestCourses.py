@@ -1,4 +1,5 @@
 from App.database import db
+from App.models import CoursePlanBuilder
 
 class EasiestCourses(CoursePlanBuilder):
     easiestCourseID = db.Column(db.Integer, primary_key=True),
@@ -45,7 +46,7 @@ class EasiestCourses(CoursePlanBuilder):
         db.session.add(self.easiestPlan)
         db.session.commit()
 
-    def getPlan()
+    def getPlan(self):
         return self.easiestPlan
 
     def get_json(self):
