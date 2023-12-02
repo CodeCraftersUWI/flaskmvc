@@ -128,8 +128,16 @@ def create_student_command(student_id, password, name, programname):
 @student_cli.command("addCourse", help="Student adds a completed course to their history")
 @click.argument("student_id", type=str)
 @click.argument("code", type=str)
-def addCourse(student_id, code):
-    addCoursetoHistory(student_id, code)
+@click.argument("grade", type=str)
+@click.pass_context
+def addCourse(ctx, student_id, code, grade):
+    addCoursetoHistory(student_id, code, grade)
+
+addCourse.params = [
+    click.Argument(["student_id"], type=str),
+    click.Argument(["code"], type=str),
+    click.Argument(["grade"], type=str)
+]
 
 @student_cli.command("getCompleted", help="Get all of a student completed courses")
 @click.argument("student_id", type=str)
