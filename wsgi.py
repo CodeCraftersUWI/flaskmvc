@@ -365,7 +365,7 @@ def get_CoreCredits(programname):
 @click.argument('programname', type=str)
 def allCourses(programname):
     all = get_all_courses(programname)
-    print(f'All courses are = {all}') if credits else print(f'error')
+    print(all)
 
 @program.command('getprogram', help='Get a program by name')
 @click.argument('programname', type=str)
@@ -507,6 +507,7 @@ def easyPlan(student_id):
 
     result = context.plan_courses(student_id)
 
+    
 
 
 app.cli.add_command(generate)

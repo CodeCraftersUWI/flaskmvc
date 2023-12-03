@@ -28,6 +28,11 @@ def get_all_programCourses(programName):
     program = get_program_by_name(programName)
     return ProgramCourses.query.filter(ProgramCourses.program_id == program.id).all()
 
+    
+def get_all_programCourses(program_id):
+    program = get_program_by_id(program_id)
+    return ProgramCourses.query.filter(ProgramCourses.program_id == program_id).all()
+
 # new function to get core, elective or foun courses
 def getProgramCoursesByType(programName, type):
     program = get_program_by_name(programName)

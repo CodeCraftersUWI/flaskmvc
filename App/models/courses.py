@@ -42,5 +42,5 @@ class Course(db.Model):
             'Level: ': self.level, 
             'Course Rating: ': self.rating,
             'No. of Credits: ': self.credits,
-            'Prerequisites: ': our
+            'Prerequisites: ': "placeholder"
         }
