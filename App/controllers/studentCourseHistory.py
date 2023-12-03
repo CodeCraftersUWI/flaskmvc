@@ -45,11 +45,19 @@ def addCoursetoHistory(student_id, course_code, grade):
 def getCompletedCourses(id):
     return StudentCourseHistory.query.filter_by(studentID=id).all()
 
+def getPassedCourseCodes(id):
+    completed = getCompletedCourses(id)
+    passed = []
+    for course in completed:
+        if course.grade != "F1" or course.grade != "F2" or course.grade != "F3":
+            passed.append(course.courseCode)
+    return passed
+
 def getCompletedCourseCodes(id):
     completed_courses = getCompletedCourses(id)
     codes = []
     
     for course in completed_courses:
-        codes.append(course.code)
+        codes.append(course.courseCode)
     
-    return completed_courses  # Return instances, not just codes
+    return codes  

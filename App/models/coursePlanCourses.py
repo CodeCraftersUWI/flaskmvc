@@ -1,6 +1,6 @@
 
 from App.database import db
-
+from App.models import Course
 
 class CoursePlanCourses(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -21,4 +21,7 @@ class CoursePlanCourses(db.Model):
             'Course Plan ID': self.planId,
             'Course': self.code
         }
+    
+    def getCourse(course_code):
+        return Course.query.filter_by(courseCode=course_code).first()
 

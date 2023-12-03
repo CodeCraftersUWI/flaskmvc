@@ -11,34 +11,51 @@ from App.controllers import (
     get_allCore,
     get_allFoun,
     get_allElectives,
-    getCompletedCourseCodes,
+    getPassedCourseCodes,
     convertToList,
     get_all_OfferedCodes,
     isCourseOffered,
     programCourses_SortedbyRating,
     programCourses_SortedbyHighestCredits,
     get_all_courses_by_planid,
-    
+    isCourseOffering   
 )
 
 
 
-def create_CoursePlan(id):
-    plan = CoursePlan(id)
-    db.session.add(plan)
-    db.session.commit()
-    return plan
+def create_CoursePlan(id, year, sem):
+    plan = CoursePlan.query.filter_by(studentId=id, academic_year=year, semester=sem).first()
+    if plan:
+        print("Course plan exists already")
+        return None
+    try:
+        if CoursePlan.checkAcademicYearFormat(year):
+            if sem == 1 or sem == 2 or sem == 3:
+                plan = CoursePlan(id, year, sem)
+                if plan:
+                    db.session.add(plan)
+                    db.session.commit()
+                    print("Course offering created successfully")
+                    return plan
+                else: 
+                    print("The course plan could not be created")
+            else:
+                print(f"The semester is invalid. There are 3 semesters: 1, 2, 3")
+        else:
+            print(f"Academic year format incorrect. Should be  yyyy/yyyy e.g. 2022/2023")
+    except Exception as e:
+        db.session.rollback()
+        print(f"An error occured when trying to create the course plan: {e}")
 
+def getCoursePlan(studentid, year, sem):
+    return CoursePlan.query.filter_by(studentId=studentid, academic_year=year, semester=sem).first()
 
-def getCoursePlan(studentid):
-    return CoursePlan.query.filter_by(studentId=studentid).first()
-
-def possessPrereqs(Student, course):
-    # preqs = getPrereqCodes(course.courseCode)
-    # completed = getCompletedCourseCodes(Student.id)
-    # for course in preqs:
-    #     if course not in completed:
-    #         return False
+def possessPrereqs(studentId, courseCode):
+    preqs = getPrereqCodes(courseCode)
+    completed = getPassedCourseCodes(studentId)
+    for course in preqs:
+        if course not in completed:
+            return False
     
     return True
 
@@ -55,28 +72,32 @@ def addCourseToPlan(Student, courseCode):
         print("Course Found!")
         offered = isCourseOffered(courseCode)
         if offered:
-            print("course is offered")
-            haveAllpreqs = possessPrereqs(Student, course)
-            if haveAllpreqs:
-                print("all prereqs")
-                plan = getCoursePlan(Student.id)
-                if plan:
-                    createPlanCourse(plan.planId, courseCode)
-                    print("Course successfully added to course plan")
-                    return plan
+            offering = isCourseOffering(courseCode, year, sem)
+            if offering:
+                haveAllpreqs = possessPrereqs(studentId, course)
+                if haveAllpreqs:
+                    plan = getCoursePlan(studentId, year, sem)
+                    if plan:
+                        createPlanCourse(plan.planId, courseCode)
+                        print("Course successfully added to course plan")
+                        return plan
+                    else:
+                        plan = create_CoursePlan(studentId, year, sem)
+                        createPlanCourse(plan.planId, courseCode)
+                        print("Plan successfully created and Course was successfully added to course plan")
+                        return plan
                 else:
-                    plan = create_CoursePlan(Student.id)
-                    createPlanCourse(plan.planId, courseCode)
-                    print("Plan successfully created and Course was successfully added to course plan")
-                    return plan
+                    print("Missing prerequisites")
+            else:
+                print("Course not being offered for requested semester")
         else:
             print("Course is not offered")
     else:
         print("Course does not exist")
 
 
-def removeCourse(Student, courseCode):
-    plan=getCoursePlan(Student.id)
+def removeCourse(studentid, year, sem, courseCode):
+    plan=getCoursePlan(studentid, year, sem)
     if plan:
         deleteCourseFromCoursePlan(plan.planId, courseCode)
 

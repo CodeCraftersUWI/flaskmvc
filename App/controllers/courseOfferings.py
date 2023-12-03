@@ -80,4 +80,10 @@ def deleteCourseOffering(courseCode, academic_year, semester):
         db.session.rollback()
         print(f"An error occured when trying to delete the course from the course offerings: {e}")
         return False
-
+    
+def isCourseOffering(courseCode, academic_year, semester):
+    offering = CourseOfferings.query.filter_by(course_code=courseCode, academic_year=academic_year, semester=semester).first()
+    if offering:
+        return True
+    else:
+        return False

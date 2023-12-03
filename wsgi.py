@@ -2,7 +2,6 @@ import click, pytest, sys
 import random
 import csv
 from flask import Flask
-from App.controllers.student import create_student
 from flask.cli import with_appcontext, AppGroup
 
 from App.database import db, get_migrate
