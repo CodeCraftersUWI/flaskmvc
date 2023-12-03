@@ -3,18 +3,23 @@ from App.database import db
 
 class Staff(User):
 
+    dept = db.Column(db.String(120),nullable=False)
+    faculty = db.Column(db.String(20),nullable=False)
+
+
+    def __init__(self, username, password, name):
+        super().__init__(username,password,name)
     
-    id = db.Column(db.String(10), db.ForeignKey('user.id'), primary_key=True)
-    name = db.Column(db.String(50))
+    def set_dept(self,dept):
+        self.dept = dept
+    def set_faculty(self,faculty):
+        self.faculty = faculty
 
-    def __init__(self, password, staff_id, name):
-        super().__init__(staff_id, password)
-        self.id = staff_id
-        self.name = name
-
-    def get_json(self):
+    def to_json(self):
+        base = super().to_json()
         return{
-            'staff_id': self.id,
-            'name': self.name,
+            base + 
+            "department" : self.dept,
+            "faculty" : self.faculty
         }
 

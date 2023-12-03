@@ -6,21 +6,40 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username =  db.Column(db.String, nullable=False, unique=True)
     password = db.Column(db.String(120), nullable=False)
+    name = db.Column(db.String(240), nullable=False)
+    userType = db.Column(db.String(40), nullable=False)
 
-    def __init__(self, username, password):
+    def __init__(self, username, password, name, utype):
         self.username = username
         self.set_password(password)
+        self.set_name(name)
+        self.userType = utype
 
-    def get_json(self):
-        return{
-            'id': self.id,
-            'username': self.username
-        }
 
     def set_password(self, password):
         """Create hashed password."""
         self.password = generate_password_hash(password, method='sha256')
-    
+
+    def set_name(self, name):
+        self.name = name
+
     def check_password(self, password):
         """Check hashed password."""
         return check_password_hash(self.password, password)
+
+    def get_username(self):
+        return self.username
+
+    def get_usertype(self):
+        return self.userType
+
+    def get_name(self):
+        return self.name
+    
+    def to_json(self):
+        return{
+            "id": self.id,
+            "name": self.name,
+            "username": self.username,
+            "user_type": self.userType
+        }
