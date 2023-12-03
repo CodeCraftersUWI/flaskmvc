@@ -2,20 +2,20 @@ from App.models import Program
 from App.database import db
 
 def create_program(name, core, elective, foun):
-    try:
-        program = Program.query.filter_by(name=name, core_credits=core, elective_credits=elective, foun_credits=foun).first()
-        if program is not None:
-            print("Program exits already")
-            return None
-        else:
+    program = Program.query.filter_by(name=name, core_credits=core, elective_credits=elective, foun_credits=foun).first()
+    if program is not None:
+        print("Program exits already")
+        return None
+    else:
+        try:
             newProgram = Program(name, core, elective, foun)
             db.session.add(newProgram)
             print("Program successfully created")
             db.session.commit()
             return newProgram
-    except Exception as e:
-        db.session.rollback()
-        print(f'Error occured when creating program: {e}')
+        except Exception as e:
+            db.session.rollback()
+            print(f'Error occured when creating program: {e}')
 
 def get_program_by_name(programName):
     return Program.query.filter_by(name=programName).first()
@@ -67,5 +67,7 @@ def get_all_courses(programName):
     all = core_courses + elective_courses + foun_courses
     return all
 
+def get_all_programs():
+    return Program.query.all()
 
 

@@ -25,13 +25,14 @@ from App.controllers import (
     create_staff,
     get_program_by_name,
     get_all_programCourses,
-    # addCoursetoHistory,
+    addCoursetoHistory,
     getCompletedCourseCodes,
     # get_allCore,
     addCourseToPlan,
     get_student_by_id,
     # generator,
-    list_all_courses
+    list_all_courses,
+    get_all_programs
     )
 
 test1 = ["COMP1600",  "COMP1601", "COMP1602", "COMP1603", "COMP1604", "MATH1115", "INFO1600", "INFO1601",  "FOUN1101", "FOUN1105", "FOUN1301", "COMP3605", "COMP3606", "COMP3607", "COMP3608",]
@@ -109,9 +110,7 @@ def list_user_command(format):
     else:
         print(get_all_users_json())
 
-app.cli.add_command(user_cli) # add the group to the cli
-
-@user_cli.command("getcourseoffering",help='testing remove courses offering feature')
+@user_cli.command("getcourseoffering", help='testing get courses offerings by year and semester feature')
 @click.argument("year", type=str)
 @click.argument("sem", type=int)
 def get_course_offering(year, sem):
@@ -120,6 +119,23 @@ def get_course_offering(year, sem):
     for offering in offerings:
       print(f'{offering.get_json()}')
 
+@user_cli.command("getprograms", help='testing get all programs feature')
+def get_programs():
+  programs=get_all_programs()
+  if programs:
+    for program in programs:
+      print(f'{program.get_json()}')
+
+@user_cli.command("getprogramcourses", help='testing get courses for a program feature')
+@click.argument("programname", type=str)
+def get_program_courses(programname):
+  programCourses=get_all_programCourses(programname)
+  if programCourses:
+    for programCourse in programCourses:
+      print(f'{programCourse.get_json()}')
+
+
+app.cli.add_command(user_cli) # add the group to the cli
 # ... (previous code remains the same)
 
 '''
@@ -195,12 +211,12 @@ def create_program_command(name,core,elective,foun):
   newprogram=create_program(name,core,elective,foun)
   print(f'{newprogram.get_json()}')
 
-@staff_cli.command("addprogramcourse",help='testing add program feature')
-@click.argument("name", type=str)
-@click.argument("code", type=str)
-@click.argument("num", type=int)
-def add_program_requirements(name,code,num):
-  response=create_programCourse(name, code, num)
+@staff_cli.command("addprogramcourse",help='testing add program course feature')
+@click.argument("programname", type=str)
+@click.argument("coursecode", type=str)
+@click.argument("type", type=int)
+def add_program_requirements(programname,coursecode,type):
+  response=create_programCourse(programname, coursecode, type)
   print(response)
 
 @staff_cli.command("addcourseoffering",help='testing add courses offering feature')

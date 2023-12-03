@@ -1,7 +1,7 @@
 from App.database import db
 class Program(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50))
+    name = db.Column(db.String(50), nullable=False, unique=True)
     core_credits = db.Column(db.Integer)
     elective_credits = db.Column(db.Integer)
     foun_credits = db.Column(db.Integer)

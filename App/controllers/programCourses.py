@@ -5,12 +5,12 @@ from App.database import db
 def create_programCourse(programName, code, num):
     try:
         program = get_program_by_name(programName)
-        if program:
+        if program is not None:
             course = get_course_by_courseCode(code)
             if course:
                 proCourse = ProgramCourses.query.filter_by(program_id=program.id, code=code, courseType=num).first()
                 if proCourse:
-                    print("Course already added to program")
+                    return "Course already added to program"
                 else:
                     proCourse = ProgramCourses(program.id, code, num)
                     db.session.add(proCourse)
