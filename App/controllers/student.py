@@ -3,15 +3,24 @@ from App.controllers import (get_program_by_name)
 from App.database import db
 
 def create_student(student_id, password, name, programname):
-    program = get_program_by_name(programname)
-    if program:
-        new_student = Student(student_id, password, name, program.id)
-        db.session.add(new_student)
-        db.session.commit()
-        return new_student
-        print("Student successfully created")
-    else:
-        print("Program doesn't exist")
+    try:
+        program = get_program_by_name(programname)
+        if program:
+            student = Student.query.filter_by(id=student_id, name=name, program_id=program.id).first()
+            if student is not None:
+                print("Student exists already")
+                return None
+            else:
+                new_student = Student(student_id, password, name, program.id)
+                db.session.add(new_student)
+                db.session.commit()
+                print("Student successfully created")
+                return new_student
+        else:
+            print("Program doesn't exist")
+    except Exception as e:
+        db.session.rollback()
+        print(f'Error creating student: {e}')
 
 def get_student_by_id(ID):
     return Student.query.filter_by(id=ID).first()
