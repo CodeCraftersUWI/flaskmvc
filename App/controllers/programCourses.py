@@ -37,10 +37,10 @@ def get_all_programCourses(programName):
 def getProgramCoursesByType(programName, type):
     program = get_program_by_name(programName)
     programCourses = ProgramCourses.query.filter_by(program_id=program.id, courseType=type).all()
-    courseCodes = []
-    for programCourse in programCourses:
-        courseCodes.append(programCourse.code)
-    return courseCodes
+    # courseCodes = []
+    # for programCourse in programCourses:
+    #     courseCodes.append(programCourse.code)
+    return programCourses
 
 # repetitive
 # def get_allCore(programName):
