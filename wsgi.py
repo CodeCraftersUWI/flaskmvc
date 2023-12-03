@@ -26,13 +26,16 @@ from App.controllers import (
     create_staff,
     get_program_by_name,
     get_all_programCourses,
-    # addCoursetoHistory,
+    addCoursetoHistory,
     getCompletedCourseCodes,
     get_allCore,
     addCourseToPlan,
     get_student_by_id,
     generator,
-    list_all_courses
+    list_all_courses,
+    getCoursePlan,
+    create_CoursePlan,
+    getPlanCourses
     )
 
 test1 = ["COMP1600",  "COMP1601", "COMP1602", "COMP1603", "COMP1604", "MATH1115", "INFO1600", "INFO1601",  "FOUN1101", "FOUN1105", "FOUN1301", "COMP3605", "COMP3606", "COMP3607", "COMP3608",]
@@ -151,6 +154,8 @@ addCourse.params = [
     click.Argument(["grade"], type=str)
 ]
 
+
+
 @student_cli.command("getCompleted", help="Get all of a student completed courses")
 @click.argument("student_id", type=str)
 def completed(student_id):
@@ -158,10 +163,12 @@ def completed(student_id):
     for c in comp:
         print(f'Course Code: {c.code}, Grade: {c.grade}')
 
-@student_cli.command("addCourseToPlan", help="Adds a course to a student's course plan")
-def courseToPlan():
-    student = get_student_by_id("816")
-    addCourseToPlan(student, "COMP2611")
+
+# @student_cli.command("addCourseToPlan", help="Adds a course to a student's course plan")
+# def courseToPlan():
+#     student = get_student_by_id("816")
+#     addCourseToPlan(student, "COMP2611")
+
 
 @student_cli.command("generate", help="Generates a course plan based on what they request")
 @click.argument("student_id", type=str)
@@ -171,6 +178,11 @@ def generatePlan(student_id, command):
     courses = generator(student, command)
     for c in courses:
         print(c)
+
+@student_cli.command("courseplan", help= "Get the current courseplan for a student")
+@click.argument("student_id", type=str)
+def getcourseplan(student_id):
+    print(getCoursePlan(student_id))
 
 
 app.cli.add_command(student_cli)
@@ -431,7 +443,50 @@ def allSemCourses():
         print("empty")
     
 
+
 app.cli.add_command(course)
 
-#lalalal this is a test comment
 
+#################################################################
+
+'''
+Course Plan Commands
+'''
+
+course_plan = AppGroup('course_plan', help = 'Program object commands')
+
+@course_plan.command('newPlan', help = 'create a new courseplan for a student')
+@click.argument('id', type=int)
+def new_course_plan(id):
+    create_CoursePlan(id)
+    print("Course plan created!")
+
+
+@course_plan.command('getPlan', help = 'get a courseplan for a student')
+@click.argument('id', type=int)
+def get_course_plan(id):
+    courseplan = getCoursePlan(id)
+    print (courseplan.get_json())
+
+
+@course_plan.command('AddCourse', help = 'add a new course for a student')
+@click.argument('id', type=int)
+@click.argument('courseCode', type = str)
+def add_new_course():
+    student = get_student_by_id("816")
+    plan = addCourseToPlan(student, "COMP2601")
+    if (plan):
+        print(plan.get_json())
+    else:
+        print("no success")
+
+@course_plan.command('getplancourses', help = "get a list of courses in the course plan") 
+@click.argument('student_id', type = int)
+def get_plan_courses(student_id):
+    plan_courses = getPlanCourses(student_id)
+    for plan in plan_courses:
+        print(plan.get_json())
+    # print(getPlanCourses(student_id))
+
+
+app.cli.add_command(course_plan)

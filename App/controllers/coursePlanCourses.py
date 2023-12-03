@@ -6,6 +6,7 @@ def createPlanCourse(planid, code):
     db.session.add(course)
     db.session.commit()
 
+
 def getCourseFromCoursePlan(planid, coursecode):
     return CoursePlanCourses.query.filter_by(
         planId = planid,

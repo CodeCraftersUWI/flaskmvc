@@ -1,5 +1,5 @@
 from App.models import Course
-from App.controllers.prerequistes import (create_prereq, get_all_prerequisites)
+from App.controllers.prerequistes import (create_prereq, get_prerequisites)
 from App.database import db
 import json, csv
 
@@ -96,9 +96,9 @@ def get_all_OfferedCodes():
     return offeredcodes
 
 def get_prerequisites(code):
-    course = get_course_by_courseCode(code)
-    prereqs = get_all_prerequisites(course.courseName)
-    return prereqs
+    # course = get_course_by_courseCode(code)
+    # prereqs = get_all_prerequisites(course.courseName)
+    return get_prerequisites(code)
 
 def get_credits(code):
     course = get_course_by_courseCode(code)

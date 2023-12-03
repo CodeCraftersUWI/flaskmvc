@@ -1,4 +1,4 @@
-from App.models import CoursePlan
+from App.models import CoursePlan, CoursePlanCourses
 from App.database import db 
 from App.controllers import (
     get_program_by_id, 
@@ -29,11 +29,12 @@ def create_CoursePlan(id):
     db.session.commit()
     return plan
 
+
 def getCoursePlan(studentid):
     return CoursePlan.query.filter_by(studentId=studentid).first()
 
 def possessPrereqs(Student, course):
-    # preqs = getPrereqCodes(course.courseName)
+    # preqs = getPrereqCodes(course.courseCode)
     # completed = getCompletedCourseCodes(Student.id)
     # for course in preqs:
     #     if course not in completed:
@@ -41,13 +42,23 @@ def possessPrereqs(Student, course):
     
     return True
 
+    
+def getPlanCourses(student_id):
+    plan = getCoursePlan(student_id)
+    return get_all_courses_by_planid(plan.planId)
+
+
+
 def addCourseToPlan(Student, courseCode):
     course = get_course_by_courseCode(courseCode)
     if course:
+        print("Course Found!")
         offered = isCourseOffered(courseCode)
         if offered:
+            print("course is offered")
             haveAllpreqs = possessPrereqs(Student, course)
             if haveAllpreqs:
+                print("all prereqs")
                 plan = getCoursePlan(Student.id)
                 if plan:
                     createPlanCourse(plan.planId, courseCode)
