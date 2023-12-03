@@ -13,7 +13,7 @@ from App.controllers import (
     get_program_by_name,
     get_student_by_id,
     get_course_by_courseCode,
-    addCoursetoHistory,
+    # addCoursetoHistory,
     getCompletedCourseCodes,
     # generator, - 
     addCourseToPlan,
@@ -73,7 +73,7 @@ def add_course_to_student_route():
     if course_code in completed_courses:
         return jsonify({'Error': 'Course already completed'}), 400
 
-    addCoursetoHistory(student_id, course_code)
+    # addCoursetoHistory(student_id, course_code)
     return jsonify({'Success!': f"Course {course_code} added to student {student_id}'s course history"}), 200
 
 
