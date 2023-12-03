@@ -1,4 +1,4 @@
-Computer Science Major
+Testing
 COMP1600,1
 COMP1601,1
 COMP1602,1
