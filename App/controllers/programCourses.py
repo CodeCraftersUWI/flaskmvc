@@ -3,18 +3,26 @@ from App.controllers import (get_program_by_name, get_program_by_id, get_course_
 from App.database import db
 
 def create_programCourse(programName, code, num):
-    program = get_program_by_name(programName)
-    if program:
-        course = get_course_by_courseCode(code)
-        if course:
-            proCourse = ProgramCourses(program.id, code, num)
-            db.session.add(proCourse)
-            db.session.commit()
-            return proCourse
+    try:
+        program = get_program_by_name(programName)
+        if program:
+            course = get_course_by_courseCode(code)
+            if course:
+                proCourse = ProgramCourses.query.filter_by(program_id=program.id, code=code, courseType=num)
+                if proCourse:
+                    print("Course already added to program")
+                else:
+                    proCourse = ProgramCourses(program.id, code, num)
+                    db.session.add(proCourse)
+                    db.session.commit()
+                    return proCourse
+            else:
+                return "Invalid course code"
         else:
-            return "Invalid course code"
-    else:
-        return "Invalid program name"
+            return "Invalid program name"
+    except Exception as e:
+        db.session.rollback()
+        print("Error occured when trying to add course to program")
 
 def get_all_programCourses(programName):
     program = get_program_by_name(programName)
@@ -22,35 +30,26 @@ def get_all_programCourses(programName):
 
 def get_allCore(programName):
     program = get_program_by_name(programName)
-    core = ProgramCourses.query.filter_by(
-    program_id=program.id,
-    courseType=1
-    ).all()
+    core = ProgramCourses.query.filter_by(program_id=program.id, courseType=1).all()
     return core if core else []
 
 def get_allElectives(programName):
     program = get_program_by_name(programName)
-    core = ProgramCourses.query.filter_by(
-    program_id=program.id,
-    courseType=2
-    ).all()
+    core = ProgramCourses.query.filter_by(program_id=program.id, courseType=2).all()
     return core if core else []
 
 def get_allFoun(programName):
     program = get_program_by_name(programName)
-    core = ProgramCourses.query.filter_by(
-    program_id=program.id,
-    courseType=3
-    ).all()
+    core = ProgramCourses.query.filter_by(program_id=program.id, courseType=3).all()
     return core if core else []
 
-def convertToList(list):
-    codes = []
+def convertToList(programCourses):
+    courseCodes = []
 
-    for a in list:
-        codes.append(a.code)
+    for programCourse in programCourses:
+        courseCodes.append(programCourse.code)
     
-    return codes
+    return courseCodes
 
 def programCourses_SortedbyRating(programid):
     program = get_program_by_id(programid)

@@ -4,8 +4,8 @@ class StudentCourseHistory(db.Model):
     __tablename__ = 'studentCourses'
     id = db.Column(db.Integer, primary_key=True)
     studentID = db.Column(db.ForeignKey('student.id'))
-    code = db.Column(db.ForeignKey('course.courseCode'))
-    grade = db.Column(db.String)
+    code = db.Column(db.String(8), db.ForeignKey('courses.courseCode'))
+    grade = db.Column(db.String(10))
 
     associated_course = db.relationship('Course', back_populates='students', overlaps="courses")
     associated_student = db.relationship('Student', back_populates='courses', overlaps="student")
