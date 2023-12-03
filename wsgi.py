@@ -499,13 +499,13 @@ Course Plan Generator Commands
 generate = AppGroup('generate', help = 'Generate a course plan based on strategy selected')
 
 @generate.command("easy")
-# @click.argument('student_ID', type = int)
-def easyPlan():
+@click.argument('student_id', type = int)
+def easyPlan(student_id):
     strategy = EasyCoursePlanner()
     context = CoursePlanner(strategy)
 
 
-    result = context.plan_courses(816)
+    result = context.plan_courses(student_id)
 
 
 
