@@ -28,16 +28,16 @@ class EasyCoursePlanner(CoursePlannerStrategy):
             for core in core_courses:
                 if (core.code == pastCourse.code):
                     completed_core_courses.append(core)
-                else:
-                    incomplete_core_courses.append(core)
-                    
-
-
-
-
+        
+        # for core in core_courses: 
+ 
         for x in completed_core_courses:
             print( x.get_json())
         
+        print("Courses that need to be completed:")
+
+        for i in incomplete_core_courses:
+            print(i.get_json())
         
 
 
