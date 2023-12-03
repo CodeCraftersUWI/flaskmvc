@@ -1,6 +1,6 @@
 from typing import List
 from App.database import db
-from App.models import CoursePlannerStrategy, CoursePlan
+from App.models import CoursePlannerStrategy, CoursePlan, student
 
 # Context
 class CoursePlanner:
@@ -10,5 +10,6 @@ class CoursePlanner:
     def set_strategy(self, strategy: CoursePlannerStrategy):
         self._strategy = strategy
 
-    def plan_courses(self, data: List[str]) -> CoursePlan:
-        return self._strategy.search(data)
+#changed data : List[str] to int for studentID
+    def plan_courses(self, data: int) -> CoursePlan:
+        return self._strategy.planCourses(data)

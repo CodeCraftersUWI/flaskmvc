@@ -4,6 +4,10 @@ import csv
 from flask import Flask
 from flask.cli import with_appcontext, AppGroup
 
+
+from App.models.EasyCoursePlanner import EasyCoursePlanner
+from App.models.CoursePlanner import CoursePlanner
+
 from App.database import db, get_migrate
 from App.main import create_app
 from App.controllers import ( 
@@ -31,7 +35,7 @@ from App.controllers import (
     addCourseToPlan,
     get_student_by_id,
     # generator,
-    list_all_courses
+    list_all_courses,
     )
 
 test1 = ["COMP1600",  "COMP1601", "COMP1602", "COMP1603", "COMP1604", "MATH1115", "INFO1600", "INFO1601",  "FOUN1101", "FOUN1105", "FOUN1301", "COMP3605", "COMP3606", "COMP3607", "COMP3608",]
@@ -486,3 +490,23 @@ def get_plan_courses(student_id):
 
 
 app.cli.add_command(course_plan)
+
+
+'''
+Course Plan Generator Commands
+'''
+
+generate = AppGroup('generate', help = 'Generate a course plan based on strategy selected')
+
+@generate.command("easy")
+# @click.argument('student_ID', type = int)
+def easyPlan():
+    strategy = EasyCoursePlanner()
+    context = CoursePlanner(strategy)
+
+
+    result = context.plan_courses(816)
+
+
+
+app.cli.add_command(generate)

@@ -1,5 +1,5 @@
 from App.database import db
-from App.models import CoursePlan, CoursePlannerStrategy
+from App.models import CoursePlan, CoursePlannerStrategy, student
 from typing import List
 from App.controllers import (
     getAllAvailableCourseOptions
@@ -8,6 +8,12 @@ from App.controllers import (
 
 # Concrete Strategy: Easy
 class EasyCoursePlanner(CoursePlannerStrategy):
-    def planCourses(self, data: List[str]) -> CoursePlan:
+    def planCourses(self, data: int) -> CoursePlan:
         # implement logic
+
+
+        print("Yes the easycourse planner is being called") 
+
+
+
         pass
