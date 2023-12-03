@@ -173,7 +173,7 @@ def create_staff_command(id, password, name):
 @click.argument("foun", type=int)
 def create_program_command(name,core,elective,foun):
   newprogram=create_program(name,core,elective,foun)
-  print(f'{newprogram.get_json()}')
+  print(f'{newprogram.to_json()}')
 
 @staff_cli.command("addprogramcourse",help='testing add program feature')
 @click.argument("name", type=str)
@@ -372,7 +372,7 @@ def create_course_command(code):
 @click.argument('code', type=str)
 def get_course(code):  
     course = get_course_by_courseCode(code)
-    course_json = course.get_json()
+    course_json = course.to_json()
     print(f'{course_json}') if course else print(f'error')
 
 @course.command('getprereqs', help='Get all prerequistes for a course')
