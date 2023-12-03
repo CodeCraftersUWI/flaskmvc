@@ -27,10 +27,10 @@ from App.controllers import (
     get_all_programCourses,
     addCoursetoHistory,
     getCompletedCourseCodes,
-    get_allCore,
+    # get_allCore,
     addCourseToPlan,
     get_student_by_id,
-    generator,
+    # generator,
     list_all_courses
     )
 
@@ -52,9 +52,9 @@ def initialize():
     db.create_all()
     create_user('bob', 'bobpass')
     createCoursesfromFile('testData/courseData.csv')
-    create_program("Computer Science Major", 69, 15, 9)
-    create_student(816, "boo", "testing", "Computer Science Major")
-    create_staff("adminpass","999", "admin")
+    create_program("Testing", 69, 15, 9)
+    create_student(816, "testpass", "test", "Testing")
+    create_staff("staffpass","999", "staff")
     
     for c in test1:
         grade = random.choice(['A', 'B', 'C', 'F'])

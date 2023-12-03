@@ -4,17 +4,26 @@ from App.database import db
 
 
 def addCoursetoHistory(studentid, code, grade):
-    student  = get_student_by_id(studentid)
-    if student:
-        course = get_course_by_courseCode(code)
-        if course:
-            completed = StudentCourseHistory(studentid, code, grade)
-            db.session.add(completed)
-            db.session.commit()
+    try:
+        exists = StudentCourseHistory.query.filter_by(studentID=studentid, code=code, grade=grade).first()
+        if exists is not None:
+            print("Course added to history already")
+            return None
         else:
-            print("Course doesn't exist")
-    else:
-        print("Student doesn't exist")
+            student  = get_student_by_id(studentid)
+            if student:
+                course = get_course_by_courseCode(code)
+                if course:
+                    completed = StudentCourseHistory(studentid, code, grade)
+                    db.session.add(completed)
+                    db.session.commit()
+                else:
+                    print("Course doesn't exist")
+            else:
+                print("Student doesn't exist")
+    except Exception as e:
+        db.session.rollback()
+        print(f'Error adding course to student history: {e}')
 '''
 def addCoursetoHistory(student_id, course_code, grade):
 

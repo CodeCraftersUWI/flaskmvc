@@ -15,7 +15,7 @@ from App.controllers import (
     get_course_by_courseCode,
     addCoursetoHistory,
     getCompletedCourseCodes,
-    generator,
+    # generator, - 
     addCourseToPlan,
     verify_student
 )
