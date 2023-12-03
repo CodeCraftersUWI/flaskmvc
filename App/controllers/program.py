@@ -60,12 +60,14 @@ def get_foun_courses(programName):
     return courses if program else []
 
 def get_all_courses(programName):
-    core_courses = get_core_courses(programName)
-    elective_courses = get_elective_courses(programName)
-    foun_courses = get_foun_courses(programName)
+    # core_courses = get_core_courses(programName)
+    # elective_courses = get_elective_courses(programName)
+    # foun_courses = get_foun_courses(programName)
 
-    all = core_courses + elective_courses + foun_courses
-    return all
+    # all = core_courses + elective_courses + foun_courses
+    # return all
+    program = get_program_by_name(programName)
+    return program.courses
 
 def get_all_programs():
     return Program.query.all()

@@ -1,6 +1,9 @@
 from App.database import db
 
 class CoursePlan(db.Model):
+    __tablename__ = 'courseplan'
+
+
     planId=db.Column(db.Integer, primary_key=True)
     academic_year = db.Column(db.String, nullable=False)
     semester = db.Column(db.String(1), nullable=False)

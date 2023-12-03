@@ -14,6 +14,7 @@ def createPlanCourse(planid, code):
         db.session.rollback()
         print(f"An error occured when trying to add a course to the course plan: {e}")
 
+
 def getCourseFromCoursePlan(planid, coursecode):
     return CoursePlanCourses.query.filter_by(planId = planid, code = coursecode).first()
 

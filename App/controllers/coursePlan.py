@@ -1,4 +1,4 @@
-from App.models import CoursePlan
+from App.models import CoursePlan, CoursePlanCourses
 from App.database import db 
 from App.controllers import (
     get_program_by_id, 
@@ -62,9 +62,17 @@ def possessPrereqs(studentId, courseCode):
     
     return True
 
-def addCourseToPlan(studentId, year, sem, courseCode):
+    
+def getPlanCourses(student_id):
+    plan = getCoursePlan(student_id)
+    return get_all_courses_by_planid(plan.planId)
+
+
+
+def addCourseToPlan(Student, courseCode):
     course = get_course_by_courseCode(courseCode)
     if course:
+        print("Course Found!")
         offered = isCourseOffered(courseCode)
         if offered:
             offering = isCourseOffering(courseCode, year, sem)

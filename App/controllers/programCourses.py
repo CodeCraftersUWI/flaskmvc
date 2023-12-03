@@ -28,6 +28,11 @@ def get_all_programCourses(programName):
     program = get_program_by_name(programName)
     return ProgramCourses.query.filter(ProgramCourses.program_id == program.id).all()
 
+    
+# def get_all_programCourses(program_id):
+#     program = get_program_by_id(program_id)
+#     return ProgramCourses.query.filter(ProgramCourses.program_id == program_id).all()
+
 # new function to get core, elective or foun courses
 def getProgramCoursesByType(programName, type):
     program = get_program_by_name(programName)
@@ -65,7 +70,7 @@ def convertToList(programCourses):
 def getProgramCoursesByRating(programName, rating):
     courses = []
     program = get_program_by_name(programName)
-    programCourses = ProgramCourses.query.all.filter_by(program_id=program.id).all()
+    programCourses = ProgramCourses.query.filter_by(program_id=program.id).all()
     for programCourse in programCourses:
         course = get_course_by_courseCode(programCourse.code)
         if course.rating == rating:
