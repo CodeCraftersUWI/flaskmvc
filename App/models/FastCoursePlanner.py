@@ -14,7 +14,7 @@ from App.controllers import (
 
 # Concrete Strategy: Fast
 class FastCoursePlanner(CoursePlannerStrategy):
-    def planCourses(self, data: List[str]) -> CoursePlan:
+    def planCourses(self, data: List[str]):
         student_id = data[0]
         current_year = data[1]
         split_year = current_year.split("/")

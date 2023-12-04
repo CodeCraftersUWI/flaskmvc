@@ -59,7 +59,7 @@ def getPassedCourseCodes(id):
     passed = []
     for course in completed:
         if course.grade != "F1" or course.grade != "F2" or course.grade != "F3":
-            passed.append(course.courseCode)
+            passed.append(course.code)
     return passed
 
 def getCompletedCourseCodes(id):
@@ -67,6 +67,6 @@ def getCompletedCourseCodes(id):
     codes = []
     
     for course in completed_courses:
-        codes.append(course.courseCode)
+        codes.append(course.code)
     
     return codes  

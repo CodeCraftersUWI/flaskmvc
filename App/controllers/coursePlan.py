@@ -63,13 +63,13 @@ def possessPrereqs(studentId, courseCode):
     return True
 
     
-def getPlanCourses(student_id):
-    plan = getCoursePlan(student_id)
+def getPlanCourses(student_id, year, sem):
+    plan = getCoursePlan(student_id, year, sem)
     return get_all_courses_by_planid(plan.planId)
 
 
 
-def addCourseToPlan(Student, courseCode):
+def addCourseToPlan(studentId, courseCode, year, sem):
     course = get_course_by_courseCode(courseCode)
     if course:
         print("Course Found!")
@@ -112,13 +112,13 @@ def getRemainingCoursesByType(student_id, type):
         required=getProgramCoursesByType(program.name, type)
         completed = getPassedCourseCodes(student_id)
 
-    if completed == []:
-        return required
+        if completed == []:
+            return required
 
-    remaining = required.copy()
-    for course in completed:
-        if course in required:
-            remaining.remove(course)
+        remaining = required.copy()
+        for course in completed:
+            if course in required:
+                remaining.remove(course)
 
     return remaining
 
@@ -152,8 +152,9 @@ def getRemainingCreditsByCourseType(student_id, type):
 def getAllAvailableCourseOptions(student_id, year, sem):
     offerings = getCourseOfferingsByYearAndSemester(year, sem)
     offeringCourseCodes = []
-    for offering in offerings:
-        offeringCourseCodes.append(offering.course_code)
+    if offerings:
+        for offering in offerings:
+            offeringCourseCodes.append(offering.course_code)
 
     student = get_student_by_id(student_id)
     program = get_program_by_id(student.program_id)

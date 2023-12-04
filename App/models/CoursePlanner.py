@@ -10,6 +10,6 @@ class CoursePlanner:
     def set_strategy(self, strategy: CoursePlannerStrategy):
         self._strategy = strategy
 
-#changed data : List[str] to int for studentID
-    def plan_courses(self, data: int) -> CoursePlan:
+
+    def plan_courses(self, data: List[str]):
         return self._strategy.planCourses(data)

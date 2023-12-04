@@ -16,9 +16,10 @@ from App.controllers import (
 
 # Concrete Strategy: Easy
 class EasyCoursePlanner(CoursePlannerStrategy):
-    def planCourses(self, data: int) -> CoursePlan:
+    def planCourses(self, data: List[str]):
         # implement logic
-        student = get_student_by_id(data)
+        student_id = data[0]
+        student = get_student_by_id(student_id)
         program = student.associated_program
         # program_courses = getProgramCoursesByRating(program.name, 5)
         program_courses = get_all_programCourses(program.name)

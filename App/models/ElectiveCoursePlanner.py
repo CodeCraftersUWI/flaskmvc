@@ -8,6 +8,6 @@ from App.controllers import (
 
 # Concrete Strategy: Elective
 class ElectiveCoursePlanner(CoursePlannerStrategy):
-    def planCourses(self, data: List[str]) -> CoursePlan:
+    def planCourses(self, data: List[str]):
         # implement logic
         pass
