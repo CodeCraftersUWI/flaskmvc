@@ -7,7 +7,8 @@ from App.controllers import (
     get_all_programCourses,
     getCompletedCourses, 
     getProgramCoursesByRating,
-    getProgramCoursesByType
+    getProgramCoursesByType,
+    get_course_by_courseCode
     #add as needed
 )
 
@@ -23,21 +24,28 @@ class EasyCoursePlanner(CoursePlannerStrategy):
         courseHistory =  getCompletedCourses(student.id)
         completed_core_courses = []
         incomplete_core_courses = []
+        incomplete_count = 0
+        complete_count = 0
+        core_credits = 0
 
         for pastCourse in courseHistory: 
             for core in core_courses:
                 if (core.code == pastCourse.code):
                     completed_core_courses.append(core)
-        
-        # for core in core_courses: 
- 
-        for x in completed_core_courses:
-            print( x.get_json())
-        
-        print("Courses that need to be completed:")
+                    complete_count += 1
+                    core_credits += get_course_by_courseCode(core.code).credits
 
-        for i in incomplete_core_courses:
-            print(i.get_json())
+        for core in core_courses:
+            if core not in completed_core_courses:
+                incomplete_core_courses.append(core)
+                incomplete_count += 1
+        
+        
+
+        for course in incomplete_core_courses: 
+            print(get_course_by_courseCode(course.code).get_json())
+
+
         
 
 

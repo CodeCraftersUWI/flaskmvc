@@ -31,17 +31,12 @@ from App.controllers import (
     get_all_programCourses,
     addCoursetoHistory,
     getCompletedCourseCodes,
-    # get_allCore,
     addCourseToPlan,
     get_student_by_id,
-    # generator,
     list_all_courses,
-    get_all_programs
+    get_all_programs,
+    getProgramCoursesByType
     )
-
-test1 = ["COMP1600",  "COMP1601", "COMP1602", "COMP1603", "COMP1604", "MATH1115", "INFO1600", "INFO1601",  "FOUN1101", "FOUN1105", "FOUN1301", "COMP3605", "COMP3606", "COMP3607", "COMP3608",]
-
-file_path = "testData/test.txt"
 
 
 # This commands file allow you to create convenient CLI commands for testing controllers
@@ -57,15 +52,19 @@ def initialize():
     db.create_all()
     create_user('bob', 'bobpass')
     createCoursesfromFile('testData/courseData.csv')
-    create_program("Testing", 69, 15, 9)
+    create_program("Testing", 30, 54, 9)
     create_student(816, "testpass", "test", "Testing")
     create_staff("staffpass","999", "staff")
     
+
+    test1 = ["COMP1600",  "COMP1601", "COMP1602", "COMP1603", "COMP1604", "MATH1115", "INFO1600", "INFO1601",  "FOUN1101", "FOUN1105", "FOUN1301", "COMP3605", "COMP3606", "COMP3607", "COMP3608",]
     for c in test1:
         grade = random.choice(['A', 'B', 'C', 'F'])
         addCoursetoHistory(816, c, grade)
     print('Student course history updated')
 
+    # add courses to program
+    file_path = "testData/test.txt"
     with open(file_path, 'r') as file:
         for i, line in enumerate(file):
             line = line.strip()
@@ -74,16 +73,16 @@ def initialize():
             else:
                 course = line.split(',')
                 create_programCourse(programName, course[0],int(course[1]))
+    print('Program courses updated')
     
+    # add course offerings for semester 1 of the year 2023/2024
     file_path1='testData/test2.txt'
     with open(file_path1, 'r') as file:
         for i, line in enumerate(file):
             line = line.strip()
-            # addSemesterCourses(line)
+            createCourseOffering(line, "2023/2024", 1) 
+    print('Course offerings created')
 
-
-
-    
     print('database intialized')
 
 '''
@@ -114,33 +113,8 @@ def list_user_command(format):
     else:
         print(get_all_users_json())
 
-@user_cli.command("getcourseoffering", help='testing get courses offerings by year and semester feature')
-@click.argument("year", type=str)
-@click.argument("sem", type=int)
-def get_course_offering(year, sem):
-  offerings=getCourseOfferingsByYearAndSemester(year, sem)
-  if offerings:
-    for offering in offerings:
-      print(f'{offering.get_json()}')
-
-@user_cli.command("getprograms", help='testing get all programs feature')
-def get_programs():
-  programs=get_all_programs()
-  if programs:
-    for program in programs:
-      print(f'{program.get_json()}')
-
-@user_cli.command("getprogramcourses", help='testing get courses for a program feature')
-@click.argument("programname", type=str)
-def get_program_courses(programname):
-  programCourses=get_all_programCourses(programname)
-  if programCourses:
-    for programCourse in programCourses:
-      print(f'{programCourse.get_json()}')
-
 
 app.cli.add_command(user_cli) # add the group to the cli
-# ... (previous code remains the same)
 
 '''
 Student
@@ -175,7 +149,7 @@ addCourse.params = [
 @student_cli.command("getCompleted", help="Get all of a student completed courses")
 @click.argument("student_id", type=str)
 def completed(student_id):
-    comp = getCompletedCourseCodes(student_id)
+    comp = getCompletedCourses(student_id)
     for c in comp:
         print(f'Course Code: {c.code}, Grade: {c.grade}')
 
@@ -186,19 +160,25 @@ def completed(student_id):
 #     addCourseToPlan(student, "COMP2611")
 
 
-@student_cli.command("generate", help="Generates a course plan based on what they request")
-@click.argument("student_id", type=str)
-@click.argument("command", type=str)
-def generatePlan(student_id, command):
-    student = get_student_by_id(student_id)
-    courses = generator(student, command)
-    for c in courses:
-        print(c)
+# @student_cli.command("generate", help="Generates a course plan based on what they request")
+# @click.argument("student_id", type=str)
+# @click.argument("command", type=str)
+# def generatePlan(student_id, command):
+#     student = get_student_by_id(student_id)
+#     courses = generator(student, command)
+#     for c in courses:
+#         print(c)
 
-@student_cli.command("courseplan", help= "Get the current courseplan for a student")
+@student_cli.command("getcourseplan", help= "Get the specified courseplan for the student")
 @click.argument("student_id", type=str)
-def getcourseplan(student_id):
-    print(getCoursePlan(student_id))
+@click.argument("academic_year", type=str)
+@click.argument("semester", type=str)
+def getcourseplan(student_id, academic_year, semester):
+    plan = getCoursePlan(student_id, academic_year, semester)
+    if plan:
+        print(f'{plan.get_json()}')
+    else:
+        print(f'Course plan requested not found')
 
 
 app.cli.add_command(student_cli)
@@ -207,12 +187,13 @@ app.cli.add_command(student_cli)
 Staff Commands
 '''
 staff_cli = AppGroup('staff',help='testing staff commands')
+
 @staff_cli.command("create",help="create staff")
 @click.argument("id", type=str)
 @click.argument("password", type=str)
 @click.argument("name", type=str)
 def create_staff_command(id, password, name): 
-  newstaff=create_staff(password,id, name)
+  newstaff=create_staff(password, id, name)
   print(f'Staff {newstaff.name} created')
 
 @staff_cli.command("addprogram",help='testing add program feature')
@@ -230,7 +211,8 @@ def create_program_command(name,core,elective,foun):
 @click.argument("type", type=int)
 def add_program_requirements(programname,coursecode,type):
   response=create_programCourse(programname, coursecode, type)
-  print(response)
+  if response is ProgramCourse:
+    print(f'{response.get_json()}')
 
 @staff_cli.command("addcourseoffering",help='testing add courses offering feature')
 @click.argument("code", type=str)
@@ -239,7 +221,7 @@ def add_program_requirements(programname,coursecode,type):
 def add_course_offering(code, year, sem):
   offering=createCourseOffering(code, year, sem)
   if offering:
-    print(f'Course offering: {offering.get_json()}')
+    print(f'{offering.get_json()}')
 
 @staff_cli.command("removecourseoffering",help='testing remove courses offering feature')
 @click.argument("code", type=str)
@@ -360,14 +342,20 @@ program = AppGroup('program', help = 'Program object commands')
 def create_program_command(name, core, elective, foun):
     program = create_program(name, core, elective, foun)
     
+@program.command("getprograms", help='Get all programs')
+def get_programs():
+    programs=get_all_programs()
+    if programs:
+        for program in programs:
+            print(f'{program.get_json()}')
 
 @program.command('core', help='Get program core courses')
 @click.argument('programname', type=str)
 def get_CoreCourses(programname):
-    create_programCourse("Computer Science Major", "COMP2611", 1)
-    create_programCourse("Computer Science Major", "COMP3605", 1)
-    create_programCourse("Computer Science Major", "COMP3610", 2)
-    core = get_allCore(programname)
+    # create_programCourse("Computer Science Major", "COMP2611", 1)
+    # create_programCourse("Computer Science Major", "COMP3605", 1)
+    # create_programCourse("Computer Science Major", "COMP3610", 2)
+    core = getProgramCoursesByType(programname, 1)
     for c in core:
         print({c.code})
 
@@ -394,7 +382,9 @@ def getProgram(programname):
 @click.argument('code', type=str)
 @click.argument('type', type=int)
 def addProgramCourse(programname, code, type):
-   create_programCourse(programname, code, type)
+    c = create_programCourse(programname, code, type)
+    if c:
+        print(f'Course:{c.code} Type:{c.courseType}')
 
 @program.command('getprogramCourses', help='Get all courses of a program')
 @click.argument('programname', type=str)
@@ -409,8 +399,7 @@ app.cli.add_command(program)
 '''
 Course Commands
 '''
-
-course = AppGroup('course', help = 'Program object commands')
+course = AppGroup('course', help = 'Course object related commands')
 
 # @course.command('create', help='Create a new course')
 # @click.argument('file_path')
@@ -432,15 +421,14 @@ def create_course_command(code):
 @click.argument('code', type=str)
 def get_course(code):  
     course = get_course_by_courseCode(code)
-    course_json = course.get_json()
-    print(f'{course_json}') if course else print(f'error')
+    print(f'{course.get_json()}') if course else print(f'error')
 
 @course.command('getprereqs', help='Get all prerequistes for a course')
 @click.argument('code', type=str)
-def get_course(code):  
+def get_course_prerequisites(code):  
     prereqs = get_prerequisites(code)
     for r in prereqs:
-        print(f'{r.prereq_courseCode}')
+        print(f'{r.prereq_code}')
 
 # @course.command('nextsem', help='Add a course to offered courses')
 # @click.argument('code', type=str)
@@ -448,17 +436,24 @@ def get_course(code):
 #     course = addSemesterCourses(code)
 #     print(f'Course Name: {course.courseName}') if course else print(f'error')
 
-@course.command('getNextSemCourses', help='Get all the courses offered next semester')
-def allSemCourses():
-    courses = get_all_OfferedCodes()
+# @course.command('getNextSemCourses', help='Get all the courses offered next semester')
+# def allSemCourses():
+#     courses = get_all_OfferedCodes()
 
-    if courses:
-        for c in courses:
-            print({c})
-    else:
-        print("empty")
+#     if courses:
+#         for c in courses:
+#             print({c})
+#     else:
+#         print("empty")
     
-
+@course.command("getcourseoffering", help='Get courses offerings for specified year and semester')
+@click.argument("year", type=str)
+@click.argument("sem", type=int)
+def get_course_offering(year, sem):
+  offerings=getCourseOfferingsByYearAndSemester(year, sem)
+  if offerings:
+    for offering in offerings:
+      print(f'{offering.get_json()}')
 
 app.cli.add_command(course)
 
@@ -469,7 +464,7 @@ app.cli.add_command(course)
 Course Plan Commands
 '''
 
-course_plan = AppGroup('course_plan', help = 'Program object commands')
+course_plan = AppGroup('course_plan', help = 'Course plan object related commands')
 
 @course_plan.command('newPlan', help = 'create a new courseplan for a student')
 @click.argument('id', type=int)

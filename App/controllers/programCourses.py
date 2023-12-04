@@ -10,16 +10,16 @@ def create_programCourse(programName, code, num):
             if course:
                 proCourse = ProgramCourses.query.filter_by(program_id=program.id, code=code, courseType=num).first()
                 if proCourse:
-                    return "Course already added to program"
+                    print(f'Course already added to program')
                 else:
                     proCourse = ProgramCourses(program.id, code, num)
                     db.session.add(proCourse)
                     db.session.commit()
                     return proCourse
             else:
-                return "Invalid course code"
+                print(f'Invalid course code')
         else:
-            return "Invalid program name"
+            print(f'Invalid program name')
     except Exception as e:
         db.session.rollback()
         print(f'Error occured when trying to add course to program: {e}')
