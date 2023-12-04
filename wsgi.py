@@ -6,7 +6,10 @@ from flask.cli import with_appcontext, AppGroup
 
 
 from App.models.EasyCoursePlanner import EasyCoursePlanner
+from App.models.FastCoursePlanner import FastCoursePlanner
+from App.models.ElectiveCoursePlanner import ElectiveCoursePlanner
 from App.models.CoursePlanner import CoursePlanner
+from App.models.programCourses import ProgramCourses
 
 from App.database import db, get_migrate
 from App.main import create_app
@@ -59,7 +62,7 @@ def initialize():
 
     test1 = ["COMP1600",  "COMP1601", "COMP1602", "COMP1603", "COMP1604", "MATH1115", "INFO1600", "INFO1601",  "FOUN1101", "FOUN1105", "FOUN1301", "COMP3605", "COMP3606", "COMP3607", "COMP3608",]
     for c in test1:
-        grade = random.choice(['A', 'B', 'C', 'F'])
+        grade = random.choice(['A', 'B', 'C', 'F1', 'F2', 'F3'])
         addCoursetoHistory(816, c, grade)
     print('Student course history updated')
 
@@ -75,15 +78,28 @@ def initialize():
                 create_programCourse(programName, course[0],int(course[1]))
     print('Program courses updated')
     
-    # add course offerings for semester 1 of the year 2023/2024
-    file_path1='testData/test2.txt'
-    with open(file_path1, 'r') as file:
-        for i, line in enumerate(file):
-            line = line.strip()
-            createCourseOffering(line, "2023/2024", 1) 
-    print('Course offerings created')
+    # # add course offerings for semester 1 of the year 2023/2024
+    # file_path1='testData/test2.txt'
+    # with open(file_path1, 'r') as file:
+    #     for i, line in enumerate(file):
+    #         line = line.strip()
+    #         createCourseOffering(line, "2023/2024", 1) 
+    
 
-    print('database intialized')
+    file_path = "testData/courseData.csv"
+    try:
+        with open(file_path, 'r') as file:
+            csv_reader = csv.DictReader(file)
+            for row in csv_reader:
+                courseCode = row["courseCode"]
+                semester = int(row["semster"])
+                createCourseOffering(courseCode, "2023/2024", semester)
+            print('Course offerings for 2023/2024 created')
+    except FileNotFoundError:
+        print("File not found.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return False    
 
 '''
 User Commands
@@ -446,14 +462,14 @@ def get_course_prerequisites(code):
 #     else:
 #         print("empty")
     
-@course.command("getcourseoffering", help='Get courses offerings for specified year and semester')
+@course.command("offering", help='Get courses offerings for specified year and semester')
 @click.argument("year", type=str)
 @click.argument("sem", type=int)
 def get_course_offering(year, sem):
   offerings=getCourseOfferingsByYearAndSemester(year, sem)
   if offerings:
     for offering in offerings:
-      print(f'{offering.get_json()}')
+        print(f'{offering.get_json()}')
 
 app.cli.add_command(course)
 
@@ -509,16 +525,40 @@ Course Plan Generator Commands
 
 generate = AppGroup('generate', help = 'Generate a course plan based on strategy selected')
 
-@generate.command("easy")
+@generate.command('createplan', help = 'Generate a course plan based on strategy selected')
+@click.argument('student_id', type=int)
+@click.argument('strategy', type=str)
+@click.argument('year', type=str)
+def generate_plan(student_id, strategy, year):
+    if strategy.lower() == "easy":
+        strategy = EasyCoursePlanner()
+        params = [student_id]
+    elif strategy.lower() == "elective":
+        electives = input("Please enter the electives you wish to pursue (e.g. COMP3606, COMP3607): ")
+        strategy = ElectiveCoursePlanner() 
+        params = [student_id, year, electives]
+    elif strategy.lower() == "fast":
+        strategy = FastCoursePlanner()
+        params = [student_id, year]
+    else:
+        print("Invalid planning strategy. Please choose 'easy', 'fast' or 'elective'.")
+
+    context = CoursePlanner(strategy)
+    result = context.plan_courses(params)
+
+   
+@generate.command("easyplan")
 @click.argument('student_id', type = int)
-def easyPlan(student_id):
+def easyplantest(student_id):
     strategy = EasyCoursePlanner()
     context = CoursePlanner(strategy)
-
-
     result = context.plan_courses(student_id)
 
-    
+
+
+
+
+
 
 
 app.cli.add_command(generate)

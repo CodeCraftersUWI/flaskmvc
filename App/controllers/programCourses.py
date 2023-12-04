@@ -28,7 +28,10 @@ def get_all_programCourses(programName):
     program = get_program_by_name(programName)
     return ProgramCourses.query.filter(ProgramCourses.program_id == program.id).all()
 
-    
+def get_program_course_by_code(code):
+    return ProgramCourses.query.filter_by(code = code).first()
+
+
 # def get_all_programCourses(program_id):
 #     program = get_program_by_id(program_id)
 #     return ProgramCourses.query.filter(ProgramCourses.program_id == program_id).all()
@@ -79,6 +82,8 @@ def getProgramCoursesByRating(programName, rating):
         print("No courses found in the given program with the given rating")
     return courses if courses else []
 
+
+
 # from previous code - not tested
 def programCourses_SortedbyRating(programid):
     program = get_program_by_id(programid)
@@ -109,3 +114,5 @@ def programCourses_SortedbyHighestCredits(programid):
             highTolow.append(course.courseCode)
 
     return highTolow
+
+
