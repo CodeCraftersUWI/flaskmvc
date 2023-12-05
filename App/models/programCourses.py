@@ -3,6 +3,12 @@ from App.database import db
 
 
 class ProgramCourses(db.Model):
+    '''
+        Course Typing:
+        1: core
+        2: elective
+        3: foun
+    '''
 
     __tablename__ ='program_courses'
     id = db.Column(db.Integer, primary_key=True)

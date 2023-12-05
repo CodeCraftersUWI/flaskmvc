@@ -4,17 +4,26 @@ from App.database import db
 
 
 def addCoursetoHistory(studentid, code, grade):
-    student  = get_student_by_id(studentid)
-    if student:
-        course = get_course_by_courseCode(code)
-        if course:
-            completed = StudentCourseHistory(studentid, code, grade)
-            db.session.add(completed)
-            db.session.commit()
+    try:
+        exists = StudentCourseHistory.query.filter_by(studentID=studentid, code=code, grade=grade).first()
+        if exists is not None:
+            print("Course added to history already")
+            return None
         else:
-            print("Course doesn't exist")
-    else:
-        print("Student doesn't exist")
+            student  = get_student_by_id(studentid)
+            if student:
+                course = get_course_by_courseCode(code)
+                if course:
+                    completed = StudentCourseHistory(studentid, code, grade)
+                    db.session.add(completed)
+                    db.session.commit()
+                else:
+                    print("Course doesn't exist")
+            else:
+                print("Student doesn't exist")
+    except Exception as e:
+        db.session.rollback()
+        print(f'Error adding course to student history: {e}')
 '''
 def addCoursetoHistory(student_id, course_code, grade):
 
@@ -45,6 +54,14 @@ def addCoursetoHistory(student_id, course_code, grade):
 def getCompletedCourses(id):
     return StudentCourseHistory.query.filter_by(studentID=id).all()
 
+def getPassedCourseCodes(id):
+    completed = getCompletedCourses(id)
+    passed = []
+    for course in completed:
+        if course.grade != "F1" and course.grade != "F2" and course.grade != "F3":
+            passed.append(course.code)
+    return passed
+
 def getCompletedCourseCodes(id):
     completed_courses = getCompletedCourses(id)
     codes = []
@@ -52,4 +69,4 @@ def getCompletedCourseCodes(id):
     for course in completed_courses:
         codes.append(course.code)
     
-    return completed_courses  # Return instances, not just codes
+    return codes  

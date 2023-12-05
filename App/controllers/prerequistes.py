@@ -24,16 +24,34 @@ def create_prereq(course, prereqCode):
         print("There was an error...")
         print(e)
 
+# check if a course is a prerequisite
+def is_prerequisite(prereq_code):
+    prereq = Prerequisites.query.filter_by(prereq_code = prereq_code).first()
+    if prereq:
+        return True
+    else:
+        return False
 
+#using a prerequisite, find courses that can be done as a result of having it
+def get_prereq_course_options(prereq_code):
+    course_options = Prerequisites.query.filter_by(prereq_code = prereq_code).all()
+    for c in course_options:
+        codes = getPrereqCodes(c.course_code)
+        if len(codes) > 1:
+            course_options.remove(c)
+    return course_options
 
-def get_all_prerequisites(courseName):
-    return Prerequisites.query.filter(Prerequisites.courseName == courseName).all()
+def get_all_prerequisites(courseCode):
+    return Prerequisites.query.filter_by(course_code = courseCode).all()
 
-def getPrereqCodes(courseName):
-    prereqs = get_all_prerequisites(courseName)
+def get_prerequisites(courseCode):
+    return Prerequisites.query.filter_by(course_code = courseCode).all()
+
+def getPrereqCodes(courseCode):
+    prereqs = get_prerequisites(courseCode)
     codes = []
 
     for p in prereqs:
-        codes.append(p.prereq_courseCode)
+        codes.append(p.prereq_code)
     
     return codes

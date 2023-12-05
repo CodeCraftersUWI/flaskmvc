@@ -8,7 +8,10 @@ class Student(User):
     
     associated_program = db.relationship('Program', back_populates='students', overlaps="program")
     courses = db.relationship('StudentCourseHistory', backref='student', lazy=True)
+    
+    
 
+    
     def __init__(self, username, password, name, program_id):
         super().__init__(username, password)
         self.id = username
