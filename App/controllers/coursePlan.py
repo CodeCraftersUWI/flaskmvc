@@ -30,15 +30,15 @@ def create_CoursePlan(id, year, sem):
         plan = CoursePlan.query.filter_by(studentId=id, academic_year=year, semester=sem).first()
         if plan:
             print("Course plan exists already")
-            return None
-        else: 
+            return plan
+        else:         
             if CoursePlan.checkAcademicYearFormat(year):
                 if sem == 1 or sem == 2 or sem == 3:
                     plan = CoursePlan(id, year, sem)
                     if plan:
                         db.session.add(plan)
                         db.session.commit()
-                        print("Course offering created successfully")
+                        print("New course plan created successfully")
                         return plan
                     else: 
                         print("The course plan could not be created")
@@ -55,8 +55,16 @@ def getCoursePlan(studentid, year, sem):
 
 def possessPrereqs(studentId, courseCode):
     preqs = getPrereqCodes(courseCode)
+    # for i in preqs:
+    #     print(f'PREREQ: {preqs}')
+    
     completed = getPassedCourseCodes(studentId)
+
+    # for x in completed:
+    #     print(f'COMPLETED: {x}')
+
     for course in preqs:
+        # print(course)
         if course not in completed:
             return False
     
@@ -67,17 +75,18 @@ def getPlanCourses(student_id, year, sem):
     plan = getCoursePlan(student_id, year, sem)
     return get_all_courses_by_planid(plan.planId)
 
-
+def numCoursesInPlan(plan_id):
+    courses = get_all_courses_by_planid(plan_id)
+    return len(courses)
 
 def addCourseToPlan(studentId, courseCode, year, sem):
     course = get_course_by_courseCode(courseCode)
     if course:
-        print("Course Found!")
         offered = isCourseOffered(courseCode)
         if offered:
             offering = isCourseOffering(courseCode, year, sem)
             if offering:
-                haveAllpreqs = possessPrereqs(studentId, course)
+                haveAllpreqs = possessPrereqs(studentId, course.courseCode)
                 if haveAllpreqs:
                     plan = getCoursePlan(studentId, year, sem)
                     if plan:
@@ -164,7 +173,7 @@ def getAllAvailableCourseOptions(student_id, year, sem):
         programCourseCodes.append(programCourse.code)
     
     passed = getPassedCourseCodes(student_id)
-
+    
     available=[]
 
     for code in offeringCourseCodes:
@@ -175,6 +184,17 @@ def getAllAvailableCourseOptions(student_id, year, sem):
 
     return available        #returns an array of course codes
 
+#same function as above but different parameters
+def getCourseOptions(student_id, offeringCourseCodes, passed, programCourseCodes):
+        available=[]
+
+        for code in offeringCourseCodes:
+            if code not in passed:
+                if code in programCourseCodes:
+                    if possessPrereqs(student_id, code):
+                        available.append(code)
+
+        return available
 # previous code - seems unnecessary
 # def getTopfive(list):
 #     return list[:5]

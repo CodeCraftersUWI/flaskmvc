@@ -10,10 +10,14 @@ from App.controllers import (
     getProgramCoursesByType,
     get_course_by_courseCode,
     get_program_course_by_code,
-    create_CoursePlan
+    create_CoursePlan,
+    getCourseOfferingsByYearAndSemester,
+    addCourseToPlan,
+    getPlanCourses,
+    numCoursesInPlan
     #add as needed
 )
-
+ 
 # Concrete Strategy: Easy
 class EasyCoursePlanner(CoursePlannerStrategy):
     def planCourses(self, data: List[str]):
@@ -64,16 +68,17 @@ class EasyCoursePlanner(CoursePlannerStrategy):
         print(f'Student Foun Credits: {foun_credits}')
         
 
-        remaining_core_courses = (program.core_credits - core_credits)/3
-        remaining_elec_courses = (program.elective_credits - elec_credits)/3
-        remaining_foun_courses = (program.foun_credits- foun_credits)/3
+        remaining_core_courses = int((program.core_credits - core_credits)/3)
+        remaining_elec_courses = int((program.elective_credits - elec_credits)/3)
+        remaining_foun_courses = int((program.foun_credits- foun_credits)/3)
 
         # print(int(remaining_core_courses))
         # print(int(remaining_elec_courses))
         # print(int(remaining_foun_courses))
 
 
-        #assuming the easiest courses get a higher rating, we take courses with ratings of 4 and 5 for the easy course plan
+        #assuming the easiest courses get a higher rating, we take courses with ratings of 5 for the easy course plan
+        # if courses with a rating of 5, the next 'easiest' rating will be selected, and so on
         easy_core_courses = []
         easy_elec_courses = []
         easy_foun_courses = []
@@ -88,24 +93,75 @@ class EasyCoursePlanner(CoursePlannerStrategy):
                     easy_core_courses.append(course)
                 if (easy.courseType == 2):
                     easy_elec_courses.append(course)
+                    # print(course.courseCode)
                 if (easy.courseType == 3):
                     easy_foun_courses.append(course)
 
             if (len(easy_core_courses)>= remaining_core_courses) and (len(easy_elec_courses)>=remaining_elec_courses) and (len(easy_foun_courses)>= remaining_foun_courses):
                 break
 
-                # create_CoursePlan(student.id,  )
-            # for i in range(remaining_core_courses, 0, -1):
 
+        counter = 0
 
+        # while(True):
 
-        # print(f'Easy Core Count: {len(easy_core_courses)}')
-        # print(f'Easy Elec Count: {len(easy_elec_courses)}')
-        # print(f'Easy Foun Count: {len(easy_foun_courses)}')
+        coursePlanList = []
+        sem = 1
+        year = "2023/2024"
+
         
-        # for i in easy_elec_courses:
-        #     print(f'{i.courseCode} {i.rating}')
+
+        coursePlanList.append(create_CoursePlan(student.id, year, sem))
+        offering = getCourseOfferingsByYearAndSemester(year,sem)
+        offered_courses = []
+
+        if offering: 
+            for crs in offering:
+                offered_courses.append(get_course_by_courseCode(crs.course_code))
+
+        plan = coursePlanList[0]
+
+        for i in range(remaining_core_courses, 0, -1):
+            if(numCoursesInPlan(plan.planId) >=5) or (core_credits >= program.core_credits):
+                break
+            popped = easy_core_courses.pop(0)
+            if(popped in offered_courses):
+                print("Adding core course")
+                core_credits += popped.credits
+                addCourseToPlan(student_id, popped.courseCode, year, sem)
+                
+        
+
+        for i in range(remaining_elec_courses, 0, -1):
+            if(numCoursesInPlan(plan.planId) >=5):
+                break
+            popped = easy_elec_courses.pop(0)
+
+            if(popped in offered_courses):
+                elec_credits += popped.credits
+                addCourseToPlan(student_id, popped.courseCode, year, sem)
+                
 
 
+        for i in range(remaining_foun_courses, 0, -1):
+            if(numCoursesInPlan(plan.planId) >=5):
+                break
+            popped = easy_foun_courses.pop(0)
+
+            if(popped in offered_courses):
+                foun_credits = popped.credits
+                addCourseToPlan(student_id, popped.courseCode, year, sem)
+                
+
+        print("\n\n")
+        print(f'Student Core Credits: {core_credits}')
+        print(f'Student Elec Credits: {elec_credits}')
+        print(f'Student Foun Credits: {foun_credits}')
+        
+
+        plancourses = getPlanCourses(student_id, "2023/2024", sem)
+
+        for i in plancourses: 
+            print(f'{get_course_by_courseCode(i.code).courseCode} {get_course_by_courseCode(i.code).credits}')
 
         pass

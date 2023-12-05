@@ -1,3 +1,5 @@
+
+
 import click, pytest, sys
 import random
 import csv
@@ -60,12 +62,14 @@ def initialize():
     createCoursesfromFile('testData/courseData.csv')
     create_program("Testing", 30, 54, 9)
     create_student(816, "testpass", "test", "Testing")
+    create_student(8160, "pass", "blank", "Testing")
     create_staff("staffpass","999", "staff")
     
 
     test1 = ["COMP1600",  "COMP1601", "COMP1602", "COMP1603", "COMP1604", "MATH1115", "INFO1600", "INFO1601",  "FOUN1101", "FOUN1105", "FOUN1301", "COMP3605", "COMP3606", "COMP3607", "COMP3608",]
     for c in test1:
-        grade = random.choice(['A', 'B', 'C', 'F1', 'F2', 'F3'])
+        # grade = random.choice(['A', 'B', 'C', 'F1', 'F2', 'F3'])
+        grade = 'A'
         addCoursetoHistory(816, c, grade)
     print('Student course history updated')
 
@@ -105,6 +109,7 @@ def initialize():
         print(f"An error occurred: {e}")
         return False    
 
+    print('Database initialized')
 '''
 User Commands
 '''
@@ -392,7 +397,8 @@ def get_CoreCredits(programname):
 @click.argument('programname', type=str)
 def allCourses(programname):
     all = get_all_courses(programname)
-    print(all)
+    for course in all:
+        print(course.code)
 
 @program.command('getprogram', help='Get a program by name')
 @click.argument('programname', type=str)
@@ -495,7 +501,7 @@ course_plan = AppGroup('course_plan', help = 'Course plan object related command
 @click.argument('sem', type = int)
 def new_course_plan(id, year, sem):
     create_CoursePlan(id, year, sem)
-    print("Course plan created!")
+    # print("Course plan created!")
 
 
 @course_plan.command('getPlan', help = 'get a courseplan for a student')
