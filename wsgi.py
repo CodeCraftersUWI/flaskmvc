@@ -569,12 +569,12 @@ def generate_plan(student_id, strategy, year, semester):
     result = context.plan_courses(params)
 
    
-@generate.command("easyplan")
-@click.argument('student_id', type = int)
-def easyplantest(student_id):
-    strategy = EasyCoursePlanner()
-    context = CoursePlanner(strategy)
-    result = context.plan_courses(student_id)
+# @generate.command("easyplan")
+# @click.argument('student_id', type = int)
+# def easyplantest(student_id):
+#     strategy = EasyCoursePlanner()
+#     context = CoursePlanner(strategy)
+#     result = context.plan_courses(student_id)
 
 
 

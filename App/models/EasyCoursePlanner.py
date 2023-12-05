@@ -164,4 +164,4 @@ class EasyCoursePlanner(CoursePlannerStrategy):
         for i in plancourses: 
             print(f'{get_course_by_courseCode(i.code).courseCode} {get_course_by_courseCode(i.code).credits}')
 
-        pass
+        return plancourses
