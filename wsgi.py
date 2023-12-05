@@ -549,7 +549,8 @@ generate = AppGroup('generate', help = 'Generate a course plan based on strategy
 @click.argument('student_id', type=int)
 @click.argument('strategy', type=str)
 @click.argument('year', type=str)
-def generate_plan(student_id, strategy, year):
+@click.argument('semester', type=int)
+def generate_plan(student_id, strategy, year, semester):
     if strategy.lower() == "easy":
         strategy = EasyCoursePlanner()
         params = [student_id]
@@ -559,7 +560,7 @@ def generate_plan(student_id, strategy, year):
         params = [student_id, year, electives]
     elif strategy.lower() == "fast":
         strategy = FastCoursePlanner()
-        params = [student_id, year]
+        params = [student_id, year, semester]
     else:
         print("Invalid planning strategy. Please choose 'easy', 'fast' or 'elective'.")
         return

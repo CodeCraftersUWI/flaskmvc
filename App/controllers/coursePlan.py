@@ -186,15 +186,15 @@ def getAllAvailableCourseOptions(student_id, year, sem):
 
 #same function as above but different parameters
 def getCourseOptions(student_id, offeringCourseCodes, passed, programCourseCodes):
-        available=[]
+    available=[]
 
-        for code in offeringCourseCodes:
-            if code not in passed:
-                if code in programCourseCodes:
-                    if possessPrereqs(student_id, code):
-                        available.append(code)
+    for code in offeringCourseCodes:
+        if code not in passed:
+            if code in programCourseCodes:
+                if possessPrereqs(student_id, code):
+                    available.append(code)
 
-        return available
+    return available
 # previous code - seems unnecessary
 # def getTopfive(list):
 #     return list[:5]
