@@ -91,7 +91,7 @@ def get_all_OfferedCodes():
     offeredcodes=[]
 
     for c in offered:
-        offeredcodes.append(c.code)
+        offeredcodes.append(c.courseCode)
     
     return offeredcodes
 

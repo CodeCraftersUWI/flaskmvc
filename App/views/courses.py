@@ -21,19 +21,19 @@ def list_courses_json():
 
     return jsonify(course_json)
 
-@course_views.route('/course', methods = ['POST'])
-def new_course():
-    data = request.json
+# @course_views.route('/course', methods = ['POST'])
+# def new_course():
+#     data = request.json
 
-    course = create_course(data['code'], 
-                  data['name'], 
-                  data['credits'], 
-                  data['rating'], 
-                  data['semester'], 
-                  data['level'],
-                  data['offered'],
-                  data['prereqs'])
-    return "Successfully Created course!"
+#     course = create_course(data['code'], 
+#                   data['name'], 
+#                   data['credits'], 
+#                   data['rating'], 
+#                   data['semester'], 
+#                   data['level'],
+#                   data['offered'],
+#                   data['prereqs'])
+#     return "Successfully Created course!"
 
 @course_views.route('/course/prereq', methods = ['POST'])
 def add_prereq():
