@@ -9,4 +9,5 @@ from .programCourses import *
 from .studentCourseHistory import *
 from .coursePlanCourses import *
 from .coursesOfferedPerSem import *
+from .courseOfferings import *
 from .coursePlan import *
